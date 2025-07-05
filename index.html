@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickBite - Food Delivery App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>QuickBite</h1>
+            </div>
+            <nav class="nav">
+                <div class="auth-buttons">
+                    <div class="auth-dropdown">
+                        <button id="registerBtn" class="btn btn-outline">Register</button>
+                        <div id="registerDropdown" class="dropdown-content">
+                            <a href="#" class="dropdown-item">As Restaurant</a>
+                            <a href="#" class="dropdown-item">As User</a>
+                            <a href="#" class="dropdown-item">As Delivery</a>
+                        </div>
+                    </div>
+                    <div class="auth-dropdown">
+                        <button id="loginBtn" class="btn btn-primary">Login</button>
+                        <div id="loginDropdown" class="dropdown-content">
+                            <a href="#" class="dropdown-item">As Admin</a>
+                            <a href="#" class="dropdown-item">As Restaurant</a>
+                            <a href="#" class="dropdown-item">As Delivery</a>
+                            <a href="#" class="dropdown-item">As User</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Section with Search -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Delicious food delivered to your doorstep</h2>
+                    <p>Order from your favorite restaurants with just a few clicks</p>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search for restaurants or food..." id="searchInput">
+                        <button class="btn btn-primary" id="searchBtn">Search</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Promotional Banner -->
+        <section class="banner">
+            <div class="container">
+                <div class="promo-banner">
+                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Special Offer">
+                    <div class="banner-text">
+                        <h3>50% OFF Your First Order</h3>
+                        <p>Use code: QUICKBITE50</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Food Categories -->
+        <section class="categories">
+            <div class="container">
+                <h2 class="section-title">Food Categories</h2>
+                <div class="category-grid">
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-pizza-slice"></i>
+                        </div>
+                        <h3>Pizza</h3>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <h3>Biryani</h3>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-hamburger"></i>
+                        </div>
+                        <h3>Burgers</h3>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <h3>Cakes</h3>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-coffee"></i>
+                        </div>
+                        <h3>Cafe</h3>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-cheese"></i>
+                        </div>
+                        <h3>Pasta</h3>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-cookie"></i>
+                        </div>
+                        <h3>Snacks</h3>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-drumstick-bite"></i>
+                        </div>
+                        <h3>Chicken</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Offers Section -->
+        <section class="offers">
+            <div class="container">
+                <h2 class="section-title">Special Offers</h2>
+                <div class="offer-grid">
+                    <div class="offer-card offer-primary">
+                        <h3>Free Delivery</h3>
+                        <p>On orders over $20</p>
+                        <button class="btn btn-outline-light">Order Now</button>
+                    </div>
+                    <div class="offer-card offer-secondary">
+                        <h3>Weekend Special</h3>
+                        <p>20% off on all desserts</p>
+                        <button class="btn btn-outline-light">Order Now</button>
+                    </div>
+                    <div class="offer-card offer-accent">
+                        <h3>Family Combo</h3>
+                        <p>Save 30% on family meals</p>
+                        <button class="btn btn-outline-light">Order Now</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Why Choose QuickBite?</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Fast Delivery</h3>
+                        <p>Get your food delivered in under 30 minutes</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3>Secure Payment</h3>
+                        <p>100% secure payment options</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3>Live Tracking</h3>
+                        <p>Track your order in real-time</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Restaurants -->
+        <section class="restaurants">
+            <div class="container">
+                <h2 class="section-title">Top Restaurants</h2>
+                <div class="restaurant-grid">
+                    <div class="restaurant-card">
+                        <div class="restaurant-img">
+                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Pizza Palace">
+                        </div>
+                        <div class="restaurant-info">
+                            <h3>Pizza Palace</h3>
+                            <div class="rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="review-count">(245)</span>
+                            </div>
+                            <p>Italian • $$ • 15-25 min</p>
+                        </div>
+                    </div>
+                    <div class="restaurant-card">
+                        <div class="restaurant-img">
+                            <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1398&q=80" alt="Burger Barn">
+                        </div>
+                        <div class="restaurant-info">
+                            <h3>Burger Barn</h3>
+                            <div class="rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="review-count">(189)</span>
+                            </div>
+                            <p>American • $ • 10-20 min</p>
+                        </div>
+                    </div>
+                    <div class="restaurant-card">
+                        <div class="restaurant-img">
+                            <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1392&q=80" alt="Sushi World">
+                        </div>
+                        <div class="restaurant-info">
+                            <h3>Sushi World</h3>
+                            <div class="rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="review-count">(176)</span>
+                            </div>
+                            <p>Japanese • $$$ • 20-30 min</p>
+                        </div>
+                    </div>
+                    <div class="restaurant-card">
+                        <div class="restaurant-img">
+                            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" alt="Taco Fiesta">
+                        </div>
+                        <div class="restaurant-info">
+                            <h3>Taco Fiesta</h3>
+                            <div class="rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="review-count">(312)</span>
+                            </div>
+                            <p>Mexican • $$ • 15-25 min</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommended For You -->
+        <section class="recommended">
+            <div class="container">
+                <h2 class="section-title">Recommended For You</h2>
+                <div class="food-grid">
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1381&q=80" alt="Margherita Pizza">
+                        </div>
+                        <div class="food-info">
+                            <h3>Margherita Pizza</h3>
+                            <p>Pizza Palace</p>
+                            <div class="food-footer">
+                                <span class="price">$12.99</span>
+                                <button class="btn btn-sm btn-primary">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1398&q=80" alt="Classic Burger">
+                        </div>
+                        <div class="food-info">
+                            <h3>Classic Burger</h3>
+                            <p>Burger Barn</p>
+                            <div class="food-footer">
+                                <span class="price">$8.99</span>
+                                <button class="btn btn-sm btn-primary">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="California Roll">
+                        </div>
+                        <div class="food-info">
+                            <h3>California Roll</h3>
+                            <p>Sushi World</p>
+                            <div class="food-footer">
+                                <span class="price">$14.99</span>
+                                <button class="btn btn-sm btn-primary">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="food-card">
+                        <div class="food-img">
+                            <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Chicken Tacos">
+                        </div>
+                        <div class="food-info">
+                            <h3>Chicken Tacos</h3>
+                            <p>Taco Fiesta</p>
+                            <div class="food-footer">
+                                <span class="price">$10.99</span>
+                                <button class="btn btn-sm btn-primary">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>QuickBite</h3>
+                    <p>Delivering happiness to your doorstep since 2023.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Restaurants</a></li>
+                        <li><a href="#">Offers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Help & Support</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Refund Policy</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Food Street, Foodville</li>
+                        <li><i class="fas fa-phone"></i> +1 234 567 890</li>
+                        <li><i class="fas fa-envelope"></i> support@quickbite.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 QuickBite. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Register</h2>
+            <div id="registerForms">
+                <!-- Forms will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginType">Login As:</label>
+                    <select id="loginType" required>
+                        <option value="">Select User Type</option>
+                        <option value="admin">Admin</option>
+                        <option value="restaurant">Restaurant</option>
+                        <option value="delivery">Delivery</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Container (hidden by default) -->
+    <div id="dashboardContainer" style="display:none;">
+        <!-- Dashboard content will be loaded here -->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
