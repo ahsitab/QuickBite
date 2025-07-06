@@ -362,9 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Show dashboard based on user type
- // ... (keep all the existing code until the showDashboard function)
-
-function showDashboard() {
+  function showDashboard() {
     document.querySelector('main').style.display = 'none';
     document.querySelector('footer').style.display = 'none';
     
@@ -439,13 +437,33 @@ function showDashboard() {
             <h3>Recent Orders</h3>
             <div class="order-list">
               <div class="order-card">
-                <p><strong>Order #1001</strong> - Pizza Palace - ৳${(24.98 * exchangeRate).toFixed(2)} - Delivered</p>
-                <button class="btn btn-sm btn-primary">Reorder</button>
-                <button class="btn btn-sm btn-outline">Rate</button>
+                <div class="order-header">
+                  <span class="order-id">Order #1001</span>
+                  <span class="order-date">Jan 15, 2023</span>
+                  <span class="order-status delivered">Delivered</span>
+                </div>
+                <div class="order-details">
+                  <p><strong>Pizza Palace</strong> - 1x Margherita Pizza, 1x Garlic Bread</p>
+                  <p>Total: ৳${(24.98 * exchangeRate).toFixed(2)}</p>
+                </div>
+                <div class="order-actions">
+                  <button class="btn btn-sm btn-primary">Reorder</button>
+                  <button class="btn btn-sm btn-outline">Rate Order</button>
+                </div>
               </div>
               <div class="order-card">
-                <p><strong>Order #1002</strong> - Burger Barn - ৳${(18.99 * exchangeRate).toFixed(2)} - In Progress</p>
-                <button class="btn btn-sm btn-primary">Track</button>
+                <div class="order-header">
+                  <span class="order-id">Order #1002</span>
+                  <span class="order-date">Jan 10, 2023</span>
+                  <span class="order-status in-progress">In Progress</span>
+                </div>
+                <div class="order-details">
+                  <p><strong>Burger Barn</strong> - 2x Classic Burger, 1x Fries</p>
+                  <p>Total: ৳${(18.99 * exchangeRate).toFixed(2)}</p>
+                </div>
+                <div class="order-actions">
+                  <button class="btn btn-sm btn-primary">Track</button>
+                </div>
               </div>
             </div>
           </div>
@@ -474,10 +492,19 @@ function showDashboard() {
             <h3>Orders Ready for Pickup</h3>
             <div class="order-list">
               <div class="order-card">
-                <p><strong>Order #1003</strong> - 2x Margherita Pizza - ৳${(25.98 * exchangeRate).toFixed(2)}</p>
-                <p>Customer: John Doe - Delivery Address: 123 Main St</p>
-                <button class="btn btn-sm btn-primary">Mark as Ready</button>
-                <button class="btn btn-sm btn-outline">Contact Delivery</button>
+                <div class="order-header">
+                  <span class="order-id">Order #1003</span>
+                  <span class="order-date">Today, 12:30 PM</span>
+                  <span class="order-status in-progress">Preparing</span>
+                </div>
+                <div class="order-details">
+                  <p>2x Margherita Pizza - ৳${(25.98 * exchangeRate).toFixed(2)}</p>
+                  <p>Customer: John Doe - Delivery Address: 123 Main St</p>
+                </div>
+                <div class="order-actions">
+                  <button class="btn btn-sm btn-primary">Mark as Ready</button>
+                  <button class="btn btn-sm btn-outline">Contact Delivery</button>
+                </div>
               </div>
             </div>
           </div>
@@ -506,12 +533,21 @@ function showDashboard() {
             <h3>Your Current Delivery</h3>
             <div class="order-list">
               <div class="order-card">
-                <p><strong>Order #1003</strong> - Pizza Palace to 123 Main St</p>
-                <p>2x Margherita Pizza - ৳${(25.98 * exchangeRate).toFixed(2)}</p>
-                <p>Customer: John Doe - Phone: 0123456789</p>
-                <button class="btn btn-sm btn-primary">Picked Up</button>
-                <button class="btn btn-sm btn-primary">Delivered</button>
-                <button class="btn btn-sm btn-outline">Navigate</button>
+                <div class="order-header">
+                  <span class="order-id">Order #1003</span>
+                  <span class="order-date">Today, 12:30 PM</span>
+                  <span class="order-status in-progress">Ready for Pickup</span>
+                </div>
+                <div class="order-details">
+                  <p>Pizza Palace to 123 Main St</p>
+                  <p>2x Margherita Pizza - ৳${(25.98 * exchangeRate).toFixed(2)}</p>
+                  <p>Customer: John Doe - Phone: 0123456789</p>
+                </div>
+                <div class="order-actions">
+                  <button class="btn btn-sm btn-primary">Picked Up</button>
+                  <button class="btn btn-sm btn-primary">Delivered</button>
+                  <button class="btn btn-sm btn-outline">Navigate</button>
+                </div>
               </div>
             </div>
           </div>
@@ -639,292 +675,712 @@ function showDashboard() {
       document.getElementById('manageRestaurantsBtn').addEventListener('click', showRestaurantManagement);
       document.getElementById('systemAnalyticsBtn').addEventListener('click', showSystemAnalytics);
     }
-}
+  }
 
-// Dashboard functions
-function showUserProfile() {
-  const dashboardContent = document.getElementById('dashboardContent');
-  dashboardContent.innerHTML = `
-    <h2 class="dashboard-title">My Profile</h2>
-    <div class="profile-section">
-      <div class="profile-header">
-        <div class="profile-avatar">
-          <i class="fas fa-user-circle"></i>
+  // Dashboard functions
+  function showUserProfile() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">My Profile</h2>
+      <div class="profile-section">
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <h3>${currentUser.name}</h3>
+          <p>${currentUser.type.charAt(0).toUpperCase() + currentUser.type.slice(1)}</p>
         </div>
-        <h3>${currentUser.name}</h3>
-        <p>Regular User</p>
-      </div>
-      <div class="profile-details">
-        <form id="profileForm">
-          <div class="form-group">
-            <label for="fullName">Full Name</label>
-            <input type="text" id="fullName" value="${currentUser.name}">
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" value="user@example.com">
-          </div>
-          <div class="form-group">
-            <label for="phone">Phone</label>
-            <input type="tel" id="phone" value="+8801XXXXXXXXX">
-          </div>
-          <button type="submit" class="btn btn-primary">Update Profile</button>
-        </form>
-      </div>
-    </div>
-    <div class="back-to-dashboard">
-      <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-    </div>
-  `;
-  
-  document.getElementById('backToDashboard').addEventListener('click', function(e) {
-    e.preventDefault();
-    showDashboard();
-  });
-  
-  document.getElementById('profileForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('Profile updated successfully!');
-    showDashboard();
-  });
-}
-
-function showOrderHistory() {
-  const dashboardContent = document.getElementById('dashboardContent');
-  dashboardContent.innerHTML = `
-    <h2 class="dashboard-title">Order History</h2>
-    <div class="order-history-section">
-      <div class="order-filters">
-        <select id="timeFilter">
-          <option value="all">All Orders</option>
-          <option value="month">This Month</option>
-          <option value="week">This Week</option>
-        </select>
-        <input type="text" id="orderSearch" placeholder="Search orders...">
-      </div>
-      <div class="order-list">
-        <div class="order-card">
-          <div class="order-header">
-            <span class="order-id">Order #1001</span>
-            <span class="order-date">Jan 15, 2023</span>
-            <span class="order-status delivered">Delivered</span>
-          </div>
-          <div class="order-details">
-            <p><strong>Pizza Palace</strong> - 1x Margherita Pizza, 1x Garlic Bread</p>
-            <p>Total: ৳${(24.98 * exchangeRate).toFixed(2)}</p>
-          </div>
-          <div class="order-actions">
-            <button class="btn btn-sm btn-primary">Reorder</button>
-            <button class="btn btn-sm btn-outline">Rate Order</button>
-          </div>
-        </div>
-        <div class="order-card">
-          <div class="order-header">
-            <span class="order-id">Order #1002</span>
-            <span class="order-date">Jan 10, 2023</span>
-            <span class="order-status canceled">Canceled</span>
-          </div>
-          <div class="order-details">
-            <p><strong>Burger Barn</strong> - 2x Classic Burger, 1x Fries</p>
-            <p>Total: ৳${(18.99 * exchangeRate).toFixed(2)}</p>
-          </div>
-          <div class="order-actions">
-            <button class="btn btn-sm btn-primary">Reorder</button>
-          </div>
+        <div class="profile-details">
+          <form id="profileForm">
+            <div class="form-group">
+              <label for="fullName">Full Name</label>
+              <input type="text" id="fullName" value="${currentUser.name}">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" value="${currentUser.username}@example.com">
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" value="+8801XXXXXXXXX">
+            </div>
+            ${currentUser.type === 'user' ? `
+            <div class="form-group">
+              <label for="address">Delivery Address</label>
+              <input type="text" id="address" value="123 Main Street, Dhaka">
+            </div>
+            ` : ''}
+            ${currentUser.type === 'restaurant' ? `
+            <div class="form-group">
+              <label for="restaurantName">Restaurant Name</label>
+              <input type="text" id="restaurantName" value="${currentUser.restaurant || ''}">
+            </div>
+            <div class="form-group">
+              <label for="cuisineType">Cuisine Type</label>
+              <input type="text" id="cuisineType" value="Italian">
+            </div>
+            ` : ''}
+            ${currentUser.type === 'delivery' ? `
+            <div class="form-group">
+              <label for="vehicleType">Vehicle Type</label>
+              <select id="vehicleType">
+                <option value="bike">Bike</option>
+                <option value="car">Car</option>
+                <option value="scooter">Scooter</option>
+              </select>
+            </div>
+            ` : ''}
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+          </form>
         </div>
       </div>
-    </div>
-    <div class="back-to-dashboard">
-      <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-    </div>
-  `;
-  
-  document.getElementById('backToDashboard').addEventListener('click', function(e) {
-    e.preventDefault();
-    showDashboard();
-  });
-}
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+    
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Profile updated successfully!');
+      showDashboard();
+    });
+  }
 
-function showUserAddresses() {
-  const dashboardContent = document.getElementById('dashboardContent');
-  dashboardContent.innerHTML = `
-    <h2 class="dashboard-title">My Addresses</h2>
-    <div class="addresses-section">
-      <button class="btn btn-primary" id="addAddressBtn">Add New Address</button>
-      <div class="address-list">
-        <div class="address-card">
-          <h4>Home</h4>
-          <p>123 Main Street, Apt 4B</p>
-          <p>Dhaka 1212, Bangladesh</p>
-          <div class="address-actions">
-            <button class="btn btn-sm btn-outline">Edit</button>
-            <button class="btn btn-sm btn-primary">Set as Default</button>
-          </div>
-        </div>
-        <div class="address-card">
-          <h4>Work</h4>
-          <p>456 Business Road, Floor 8</p>
-          <p>Dhaka 1216, Bangladesh</p>
-          <div class="address-actions">
-            <button class="btn btn-sm btn-outline">Edit</button>
-            <button class="btn btn-sm btn-primary">Set as Default</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="back-to-dashboard">
-      <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-    </div>
-  `;
-  
-  document.getElementById('backToDashboard').addEventListener('click', function(e) {
-    e.preventDefault();
-    showDashboard();
-  });
-  
-  document.getElementById('addAddressBtn').addEventListener('click', function() {
-    alert('Add new address functionality would go here');
-  });
-}
-
-function showRestaurants() {
-  const dashboardContent = document.getElementById('dashboardContent');
-  dashboardContent.innerHTML = `
-    <h2 class="dashboard-title">Browse Restaurants</h2>
-    <div class="restaurants-section">
-      <div class="restaurant-filters">
-        <select id="cuisineFilter">
-          <option value="all">All Cuisines</option>
-          <option value="italian">Italian</option>
-          <option value="american">American</option>
-          <option value="japanese">Japanese</option>
-          <option value="mexican">Mexican</option>
-        </select>
-        <select id="deliveryTimeFilter">
-          <option value="all">Any Delivery Time</option>
-          <option value="fast">Under 30 min</option>
-          <option value="medium">30-45 min</option>
-        </select>
-        <input type="text" id="restaurantSearch" placeholder="Search restaurants...">
-      </div>
-      <div class="restaurant-grid">
-        ${generateRestaurantCards()}
-      </div>
-    </div>
-    <div class="back-to-dashboard">
-      <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-    </div>
-  `;
-  
-  document.getElementById('backToDashboard').addEventListener('click', function(e) {
-    e.preventDefault();
-    showDashboard();
-  });
-}
-
-function showMenuManagement() {
-  const dashboardContent = document.getElementById('dashboardContent');
-  dashboardContent.innerHTML = `
-    <h2 class="dashboard-title">Menu Management</h2>
-    <div class="menu-management-section">
-      <button class="btn btn-primary" id="addMenuItemBtn">Add Menu Item</button>
-      <div class="menu-categories">
-        <button class="category-btn active">All Items</button>
-        <button class="category-btn">Pizza</button>
-        <button class="category-btn">Pasta</button>
-        <button class="category-btn">Sides</button>
-        <button class="category-btn">Drinks</button>
-      </div>
-      <div class="menu-list">
-        ${generateMenuItems()}
-      </div>
-    </div>
-    <div class="back-to-dashboard">
-      <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-    </div>
-  `;
-  
-  document.getElementById('backToDashboard').addEventListener('click', function(e) {
-    e.preventDefault();
-    showDashboard();
-  });
-  
-  document.getElementById('addMenuItemBtn').addEventListener('click', function() {
-    const menuList = document.querySelector('.menu-list');
-    menuList.insertAdjacentHTML('beforeend', `
-      <div class="menu-item edit-mode">
-        <div class="menu-item-info">
-          <input type="text" value="New Menu Item" class="edit-input">
-          <select class="edit-input">
-            <option>Pizza</option>
-            <option>Pasta</option>
-            <option>Sides</option>
-            <option>Drinks</option>
+  function showOrderHistory() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">Order History</h2>
+      <div class="order-history-section">
+        <div class="order-filters">
+          <select id="timeFilter">
+            <option value="all">All Orders</option>
+            <option value="month">This Month</option>
+            <option value="week">This Week</option>
           </select>
-          <input type="number" value="0.00" class="edit-input">
+          <input type="text" id="orderSearch" placeholder="Search orders...">
         </div>
-        <div class="menu-item-actions">
-          <button class="btn btn-sm btn-primary">Save</button>
-          <button class="btn btn-sm btn-outline">Cancel</button>
+        <div class="order-list">
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">Order #1001</span>
+              <span class="order-date">Jan 15, 2023</span>
+              <span class="order-status delivered">Delivered</span>
+            </div>
+            <div class="order-details">
+              <p><strong>Pizza Palace</strong> - 1x Margherita Pizza, 1x Garlic Bread</p>
+              <p>Total: ৳${(24.98 * exchangeRate).toFixed(2)}</p>
+            </div>
+            <div class="order-actions">
+              <button class="btn btn-sm btn-primary">Reorder</button>
+              <button class="btn btn-sm btn-outline">Rate Order</button>
+            </div>
+          </div>
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">Order #1002</span>
+              <span class="order-date">Jan 10, 2023</span>
+              <span class="order-status canceled">Canceled</span>
+            </div>
+            <div class="order-details">
+              <p><strong>Burger Barn</strong> - 2x Classic Burger, 1x Fries</p>
+              <p>Total: ৳${(18.99 * exchangeRate).toFixed(2)}</p>
+            </div>
+            <div class="order-actions">
+              <button class="btn btn-sm btn-primary">Reorder</button>
+            </div>
+          </div>
         </div>
       </div>
-    `);
-  });
-}
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
 
-function showRestaurantAnalytics() {
-  const dashboardContent = document.getElementById('dashboardContent');
-  dashboardContent.innerHTML = `
-    <h2 class="dashboard-title">Sales Analytics</h2>
-    <div class="analytics-section">
-      <div class="analytics-filters">
-        <select id="timePeriod">
-          <option value="week">This Week</option>
-          <option value="month">This Month</option>
-          <option value="year">This Year</option>
-        </select>
-      </div>
-      <div class="analytics-cards">
-        <div class="analytics-card">
-          <h4>Total Orders</h4>
-          <p>124</p>
-          <small>+12% from last week</small>
-        </div>
-        <div class="analytics-card">
-          <h4>Total Revenue</h4>
-          <p>৳${(2456.78 * exchangeRate).toFixed(2)}</p>
-          <small>+8% from last week</small>
-        </div>
-        <div class="analytics-card">
-          <h4>Average Order Value</h4>
-          <p>৳${(19.81 * exchangeRate).toFixed(2)}</p>
-          <small>+3% from last week</small>
+  function showUserAddresses() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">My Addresses</h2>
+      <div class="addresses-section">
+        <button class="btn btn-primary" id="addAddressBtn">Add New Address</button>
+        <div class="address-list">
+          <div class="address-card">
+            <h4>Home</h4>
+            <p>123 Main Street, Apt 4B</p>
+            <p>Dhaka 1212, Bangladesh</p>
+            <div class="address-actions">
+              <button class="btn btn-sm btn-outline">Edit</button>
+              <button class="btn btn-sm btn-primary">Set as Default</button>
+            </div>
+          </div>
+          <div class="address-card">
+            <h4>Work</h4>
+            <p>456 Business Road, Floor 8</p>
+            <p>Dhaka 1216, Bangladesh</p>
+            <div class="address-actions">
+              <button class="btn btn-sm btn-outline">Edit</button>
+              <button class="btn btn-sm btn-primary">Set as Default</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="chart-placeholder">
-        <p>Sales chart would appear here</p>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
       </div>
-      <div class="popular-items">
-        <h4>Top Selling Items</h4>
-        <ol>
-          <li>Margherita Pizza (45 orders)</li>
-          <li>Pepperoni Pizza (32 orders)</li>
-          <li>Garlic Bread (28 orders)</li>
-        </ol>
-      </div>
-    </div>
-    <div class="back-to-dashboard">
-      <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-    </div>
-  `;
-  
-  document.getElementById('backToDashboard').addEventListener('click', function(e) {
-    e.preventDefault();
-    showDashboard();
-  });
-}
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+    
+    document.getElementById('addAddressBtn').addEventListener('click', function() {
+      const addressList = document.querySelector('.address-list');
+      addressList.insertAdjacentHTML('beforeend', `
+        <div class="address-card">
+          <div class="form-group">
+            <label>Address Type:</label>
+            <input type="text" value="New Address" class="edit-input">
+          </div>
+          <div class="form-group">
+            <label>Address Line 1:</label>
+            <input type="text" class="edit-input">
+          </div>
+          <div class="form-group">
+            <label>Address Line 2:</label>
+            <input type="text" class="edit-input">
+          </div>
+          <div class="address-actions">
+            <button class="btn btn-sm btn-primary">Save</button>
+            <button class="btn btn-sm btn-outline">Cancel</button>
+          </div>
+        </div>
+      `);
+    });
+  }
 
-// ... (keep all the remaining existing code)
+  function showRestaurants() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">Browse Restaurants</h2>
+      <div class="restaurants-section">
+        <div class="restaurant-filters">
+          <select id="cuisineFilter">
+            <option value="all">All Cuisines</option>
+            <option value="italian">Italian</option>
+            <option value="american">American</option>
+            <option value="japanese">Japanese</option>
+            <option value="mexican">Mexican</option>
+          </select>
+          <select id="deliveryTimeFilter">
+            <option value="all">Any Delivery Time</option>
+            <option value="fast">Under 30 min</option>
+            <option value="medium">30-45 min</option>
+          </select>
+          <input type="text" id="restaurantSearch" placeholder="Search restaurants...">
+        </div>
+        <div class="restaurant-grid">
+          ${generateRestaurantCards()}
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
+
+  function showMenuManagement() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">Menu Management</h2>
+      <div class="menu-management-section">
+        <button class="btn btn-primary" id="addMenuItemBtn">Add Menu Item</button>
+        <div class="menu-categories">
+          <button class="category-btn active">All Items</button>
+          <button class="category-btn">Pizza</button>
+          <button class="category-btn">Pasta</button>
+          <button class="category-btn">Sides</button>
+          <button class="category-btn">Drinks</button>
+        </div>
+        <div class="menu-list">
+          ${generateMenuItems()}
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+    
+    document.getElementById('addMenuItemBtn').addEventListener('click', function() {
+      const menuList = document.querySelector('.menu-list');
+      menuList.insertAdjacentHTML('beforeend', `
+        <div class="menu-item edit-mode">
+          <div class="menu-item-info">
+            <input type="text" value="New Menu Item" class="edit-input">
+            <select class="edit-input">
+              <option>Pizza</option>
+              <option>Pasta</option>
+              <option>Sides</option>
+              <option>Drinks</option>
+            </select>
+            <input type="number" value="0.00" class="edit-input" placeholder="Price in ৳">
+          </div>
+          <div class="menu-item-actions">
+            <button class="btn btn-sm btn-primary">Save</button>
+            <button class="btn btn-sm btn-outline">Cancel</button>
+          </div>
+        </div>
+      `);
+    });
+  }
+
+  function showRestaurantAnalytics() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">Sales Analytics</h2>
+      <div class="analytics-section">
+        <div class="analytics-filters">
+          <select id="timePeriod">
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="year">This Year</option>
+          </select>
+        </div>
+        <div class="analytics-cards">
+          <div class="analytics-card">
+            <h4>Total Orders</h4>
+            <p>124</p>
+            <small>+12% from last week</small>
+          </div>
+          <div class="analytics-card">
+            <h4>Total Revenue</h4>
+            <p>৳${(2456.78 * exchangeRate).toFixed(2)}</p>
+            <small>+8% from last week</small>
+          </div>
+          <div class="analytics-card">
+            <h4>Average Order Value</h4>
+            <p>৳${(19.81 * exchangeRate).toFixed(2)}</p>
+            <small>+3% from last week</small>
+          </div>
+        </div>
+        <div class="chart-placeholder">
+          <p>Sales chart would appear here</p>
+        </div>
+        <div class="popular-items">
+          <h4>Top Selling Items</h4>
+          <ol>
+            <li>Margherita Pizza (45 orders)</li>
+            <li>Pepperoni Pizza (32 orders)</li>
+            <li>Garlic Bread (28 orders)</li>
+          </ol>
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
+
+  function showRestaurantOrders() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">Current Orders</h2>
+      <div class="orders-section">
+        <div class="order-filters">
+          <select id="orderStatusFilter">
+            <option value="all">All Orders</option>
+            <option value="new">New</option>
+            <option value="preparing">Preparing</option>
+            <option value="ready">Ready for Pickup</option>
+          </select>
+        </div>
+        <div class="order-list">
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">Order #1003</span>
+              <span class="order-date">Today, 12:30 PM</span>
+              <span class="order-status in-progress">Preparing</span>
+            </div>
+            <div class="order-details">
+              <p>2x Margherita Pizza - ৳${(25.98 * exchangeRate).toFixed(2)}</p>
+              <p>Customer: John Doe - Delivery Address: 123 Main St</p>
+            </div>
+            <div class="order-actions">
+              <button class="btn btn-sm btn-primary">Mark as Ready</button>
+              <button class="btn btn-sm btn-outline">Contact Customer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
+
+  function showAssignedDeliveries() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">Assigned Deliveries</h2>
+      <div class="deliveries-section">
+        <div class="delivery-filters">
+          <select id="deliveryStatusFilter">
+            <option value="all">All Deliveries</option>
+            <option value="assigned">Assigned</option>
+            <option value="picked">Picked Up</option>
+            <option value="delivered">Delivered</option>
+          </select>
+        </div>
+        <div class="order-list">
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">Order #1003</span>
+              <span class="order-date">Today, 12:30 PM</span>
+              <span class="order-status in-progress">Ready for Pickup</span>
+            </div>
+            <div class="order-details">
+              <p>From: Pizza Palace to 123 Main St</p>
+              <p>2x Margherita Pizza - ৳${(25.98 * exchangeRate).toFixed(2)}</p>
+              <p>Customer: John Doe - Phone: 0123456789</p>
+            </div>
+            <div class="order-actions">
+              <button class="btn btn-sm btn-primary">Picked Up</button>
+              <button class="btn btn-sm btn-primary">Delivered</button>
+              <button class="btn btn-sm btn-outline">Navigate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
+
+  function showUserManagement() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">User Management</h2>
+      <div class="user-management-section">
+        <button class="btn btn-primary" id="addUserBtn">Add New User</button>
+        <div class="user-filters">
+          <select id="userTypeFilter">
+            <option value="all">All Users</option>
+            <option value="admin">Admins</option>
+            <option value="restaurant">Restaurants</option>
+            <option value="delivery">Delivery Persons</option>
+            <option value="user">Customers</option>
+          </select>
+          <input type="text" id="userSearch" placeholder="Search users...">
+        </div>
+        <div class="user-list">
+          <div class="user-card">
+            <div class="user-info">
+              <h4>John Doe</h4>
+              <p>Customer</p>
+              <p>Email: john@example.com</p>
+            </div>
+            <div class="user-actions">
+              <button class="btn btn-sm btn-outline">Edit</button>
+              <button class="btn btn-sm btn-primary">Deactivate</button>
+            </div>
+          </div>
+          <div class="user-card">
+            <div class="user-info">
+              <h4>Pizza Palace</h4>
+              <p>Restaurant</p>
+              <p>Cuisine: Italian</p>
+            </div>
+            <div class="user-actions">
+              <button class="btn btn-sm btn-outline">Edit</button>
+              <button class="btn btn-sm btn-primary">Deactivate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
+
+  function showRestaurantManagement() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">Restaurant Management</h2>
+      <div class="restaurant-management-section">
+        <button class="btn btn-primary" id="addRestaurantBtn">Add New Restaurant</button>
+        <div class="restaurant-filters">
+          <select id="restaurantStatusFilter">
+            <option value="all">All Restaurants</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending Approval</option>
+            <option value="suspended">Suspended</option>
+          </select>
+          <input type="text" id="restaurantSearch" placeholder="Search restaurants...">
+        </div>
+        <div class="restaurant-list">
+          <div class="restaurant-card">
+            <div class="restaurant-info">
+              <h4>Pizza Palace</h4>
+              <p>Italian • Active</p>
+              <p>Owner: John Smith</p>
+            </div>
+            <div class="restaurant-actions">
+              <button class="btn btn-sm btn-outline">Edit</button>
+              <button class="btn btn-sm btn-primary">View Menu</button>
+            </div>
+          </div>
+          <div class="restaurant-card">
+            <div class="restaurant-info">
+              <h4>Burger Barn</h4>
+              <p>American • Active</p>
+              <p>Owner: Sarah Johnson</p>
+            </div>
+            <div class="restaurant-actions">
+              <button class="btn btn-sm btn-outline">Edit</button>
+              <button class="btn btn-sm btn-primary">View Menu</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
+
+  function showSystemAnalytics() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">System Analytics</h2>
+      <div class="system-analytics-section">
+        <div class="analytics-filters">
+          <select id="analyticsTimePeriod">
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="year">This Year</option>
+          </select>
+        </div>
+        <div class="analytics-cards">
+          <div class="analytics-card">
+            <h4>Total Orders</h4>
+            <p>1,245</p>
+            <small>+12% from last week</small>
+          </div>
+          <div class="analytics-card">
+            <h4>Total Revenue</h4>
+            <p>৳${(24567.89 * exchangeRate).toFixed(2)}</p>
+            <small>+8% from last week</small>
+          </div>
+          <div class="analytics-card">
+            <h4>Active Users</h4>
+            <p>876</p>
+            <small>+5% from last week</small>
+          </div>
+        </div>
+        <div class="chart-placeholder">
+          <p>System analytics charts would appear here</p>
+        </div>
+        <div class="popular-restaurants">
+          <h4>Top Performing Restaurants</h4>
+          <ol>
+            <li>Pizza Palace (342 orders)</li>
+            <li>Burger Barn (289 orders)</li>
+            <li>Sushi World (187 orders)</li>
+          </ol>
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
+
+  function showTrackOrder() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">Track Your Order</h2>
+      <div class="track-order-section">
+        <div class="order-status-tracker">
+          <div class="status-step completed">
+            <div class="status-icon"><i class="fas fa-check"></i></div>
+            <div class="status-text">Order Placed</div>
+            <div class="status-time">Today, 12:30 PM</div>
+          </div>
+          <div class="status-step completed">
+            <div class="status-icon"><i class="fas fa-check"></i></div>
+            <div class="status-text">Preparing</div>
+            <div class="status-time">Today, 12:35 PM</div>
+          </div>
+          <div class="status-step active">
+            <div class="status-icon"><i class="fas fa-motorcycle"></i></div>
+            <div class="status-text">On the Way</div>
+            <div class="status-time">Estimated: 1:00 PM</div>
+          </div>
+          <div class="status-step">
+            <div class="status-icon"><i class="fas fa-home"></i></div>
+            <div class="status-text">Delivered</div>
+            <div class="status-time"></div>
+          </div>
+        </div>
+        <div class="delivery-map-placeholder">
+          <p>Delivery map with real-time tracking would appear here</p>
+        </div>
+        <div class="delivery-details">
+          <h4>Delivery Details</h4>
+          <p><strong>Order #1002</strong> - Burger Barn</p>
+          <p>2x Classic Burger, 1x Fries</p>
+          <p>Total: ৳${(18.99 * exchangeRate).toFixed(2)}</p>
+          <p>Delivery Person: Raisha Delivery</p>
+          <p>Contact: +8801XXXXXXXX</p>
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
+
+  function showDeliveryMap() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">Delivery Map</h2>
+      <div class="delivery-map-section">
+        <div class="map-filters">
+          <select id="mapView">
+            <option value="all">All Deliveries</option>
+            <option value="assigned">Assigned</option>
+            <option value="in-progress">In Progress</option>
+          </select>
+        </div>
+        <div class="map-placeholder">
+          <p>Interactive delivery map would appear here</p>
+          <p>Showing delivery locations and routes</p>
+        </div>
+        <div class="delivery-list">
+          <div class="delivery-card">
+            <h4>Order #1003</h4>
+            <p>From: Pizza Palace to 123 Main St</p>
+            <p>Status: On the way</p>
+            <button class="btn btn-sm btn-primary">Navigate</button>
+          </div>
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
+
+  function showDeliveryHistory() {
+    const dashboardContent = document.getElementById('dashboardContent');
+    dashboardContent.innerHTML = `
+      <h2 class="dashboard-title">Delivery History</h2>
+      <div class="delivery-history-section">
+        <div class="history-filters">
+          <select id="historyTimeFilter">
+            <option value="all">All Time</option>
+            <option value="month">This Month</option>
+            <option value="week">This Week</option>
+            <option value="today">Today</option>
+          </select>
+        </div>
+        <div class="delivery-list">
+          <div class="delivery-card">
+            <div class="delivery-header">
+              <span class="delivery-id">Order #1001</span>
+              <span class="delivery-date">Jan 15, 2023</span>
+              <span class="delivery-status delivered">Delivered</span>
+            </div>
+            <div class="delivery-details">
+              <p>From: Pizza Palace to 123 Main St</p>
+              <p>Earnings: ৳${(50 * exchangeRate).toFixed(2)}</p>
+            </div>
+          </div>
+          <div class="delivery-card">
+            <div class="delivery-header">
+              <span class="delivery-id">Order #1002</span>
+              <span class="delivery-date">Jan 10, 2023</span>
+              <span class="delivery-status delivered">Delivered</span>
+            </div>
+            <div class="delivery-details">
+              <p>From: Burger Barn to 456 Business Rd</p>
+              <p>Earnings: ৳${(45 * exchangeRate).toFixed(2)}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="back-to-dashboard">
+        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    `;
+    
+    document.getElementById('backToDashboard').addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+    });
+  }
   
   // Helper function to generate restaurant cards
   function generateRestaurantCards() {
