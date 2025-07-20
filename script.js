@@ -1,29 +1,179 @@
 // Predefined users
 const users = {
   admin: [
-    { username: "Sitab", password: "admin123", name: "Sitab Admin" }
+    { 
+      username: "admin", 
+      password: "admin123", 
+      name: "Admin User",
+      email: "admin@quickbite.com",
+      phone: "+8801712345678",
+      address: "123 Admin Street, Dhaka",
+      joinDate: "2023-01-01",
+      status: "active"
+    }
   ],
   restaurant: [
-    { username: "Simia", password: "resto123", name: "Simia Restaurant", restaurant: "Pizza Palace" },
-    { username: "Sitab", password: "admin123", name: "Sitab Admin" },
-    { username: "Maisha", password: "resto123", name: "Maisha Restaurant", restaurant: "Burger Barn" }
+       { 
+      username: "admin", 
+      password: "admin123", 
+      name: "Admin User",
+      email: "admin@quickbite.com",
+      phone: "+8801712345678",
+      address: "123 Admin Street, Dhaka",
+      joinDate: "2023-01-01",
+      status: "active"
+    },
+    { 
+      username: "pizzapalace", 
+      password: "resto123", 
+      name: "Simia Restaurant", 
+      restaurant: "Pizza Palace",
+      email: "simia@pizzapalace.com",
+      phone: "+8801812345678",
+      address: "456 Pizza Road, Dhaka",
+      cuisine: "Italian",
+      openingHours: "10:00 AM - 10:00 PM",
+      deliveryRadius: "5 km",
+      joinDate: "2023-02-15",
+      status: "active",
+      menu: [
+        { id: 1, name: "Margherita Pizza", price: 12.99, description: "Classic pizza with tomato sauce, mozzarella, and basil", image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38" },
+        { id: 2, name: "Pepperoni Pizza", price: 14.99, description: "Traditional pizza with spicy pepperoni", image: "https://images.unsplash.com/photo-1628840042765-356cda07504e" }
+      ],
+      orders: []
+    },
+    { 
+      username: "burgerbarn", 
+      password: "resto123", 
+      name: "Maisha Restaurant", 
+      restaurant: "Burger Barn",
+      email: "maisha@burgerbarn.com",
+      phone: "+8801912345678",
+      address: "789 Burger Lane, Dhaka",
+      cuisine: "American",
+      openingHours: "11:00 AM - 11:00 PM",
+      deliveryRadius: "7 km",
+      joinDate: "2023-03-10",
+      status: "active",
+      menu: [
+        { id: 1, name: "Classic Burger", price: 8.99, description: "Beef patty with lettuce and special sauce", image: "https://images.unsplash.com/photo-1559847844-5315695dadae" },
+        { id: 2, name: "Cheeseburger", price: 9.99, description: "Classic with melted cheese", image: "https://images.unsplash.com/photo-1561758033-d89a9ad46330" }
+      ],
+      orders: []
+    }
   ],
   delivery: [
-    { username: "Raisha", password: "delivery123", name: "Raisha Delivery" },
-    { username: "Sitab", password: "admin123", name: "Sitab Admin" }
+       { 
+      username: "admin", 
+      password: "admin123", 
+      name: "Admin User",
+      email: "admin@quickbite.com",
+      phone: "+8801712345678",
+      address: "123 Admin Street, Dhaka",
+      joinDate: "2023-01-01",
+      status: "active"
+    },
+    { 
+      username: "raisha", 
+      password: "delivery123", 
+      name: "Raisha Delivery",
+      email: "raisha@quickbite.com",
+      phone: "+8801612345678",
+      address: "101 Delivery Street, Dhaka",
+      vehicleType: "bike",
+      licenseNumber: "DL123456",
+      joinDate: "2023-04-05",
+      status: "active",
+      availability: "full-time",
+      deliveries: []
+    }
   ],
   user: [
-    { username: "user1", password: "user123", name: "Regular User" },
-    { username: "Sitab", password: "admin123", name: "Sitab Admin" },
-    { username: "user2", password: "user123", name: "Another User" }
+       { 
+      username: "admin", 
+      password: "admin123", 
+      name: "Admin User",
+      email: "admin@quickbite.com",
+      phone: "+8801712345678",
+      address: "123 Admin Street, Dhaka",
+      joinDate: "2023-01-01",
+      status: "active"
+    },
+    { 
+      username: "user1", 
+      password: "user123", 
+      name: "Regular User",
+      email: "user1@example.com",
+      phone: "+8801512345678",
+      address: "202 User Avenue, Dhaka",
+      city: "Dhaka",
+      postalCode: "1207",
+      country: "Bangladesh",
+      joinDate: "2023-05-20",
+      status: "active",
+      paymentMethods: [
+        { type: "credit", last4: "1234" },
+        { type: "mobile", provider: "bKash" }
+      ],
+      orders: [],
+      cart: []
+    },
+    { 
+      username: "user2", 
+      password: "user123", 
+      name: "Another User",
+      email: "user2@example.com",
+      phone: "+8801312345678",
+      address: "303 Customer Road, Dhaka",
+      city: "Dhaka",
+      postalCode: "1212",
+      country: "Bangladesh",
+      joinDate: "2023-06-15",
+      status: "active",
+      paymentMethods: [
+        { type: "debit", last4: "5678" }
+      ],
+      orders: [],
+      cart: []
+    }
   ]
 };
 
 // Current user
 let currentUser = null;
 
-// Exchange rate (1 USD to BDT)
-const exchangeRate = 117.50;
+// Exchange rate (1 USD to BDT) - would normally fetch this from an API
+let exchangeRate = 117.50;
+
+// Orders data
+let orders = [
+  {
+    id: 1001,
+    userId: "user1",
+    restaurantId: "pizzapalace",
+    items: [
+      { id: 1, name: "Margherita Pizza", price: 12.99, quantity: 1, restaurant: "Pizza Palace" },
+      { id: 3, name: "Garlic Bread", price: 4.99, quantity: 1, restaurant: "Pizza Palace" }
+    ],
+    total: 17.98,
+    status: "delivered",
+    date: "2023-01-15",
+    deliveryPerson: "Raisha Delivery"
+  },
+  {
+    id: 1002,
+    userId: "user1",
+    restaurantId: "burgerbarn",
+    items: [
+      { id: 1, name: "Classic Burger", price: 8.99, quantity: 2, restaurant: "Burger Barn" },
+      { id: 2, name: "Fries", price: 3.99, quantity: 1, restaurant: "Burger Barn" }
+    ],
+    total: 21.97,
+    status: "in-progress",
+    date: "2023-01-10",
+    deliveryPerson: "Raisha Delivery"
+  }
+];
 
 // Food data by category
 const foodData = {
@@ -32,42 +182,137 @@ const foodData = {
     { name: "Pepperoni Pizza", price: 14.99, restaurant: "Pizza Palace", description: "Traditional pizza with spicy pepperoni", image: "https://images.unsplash.com/photo-1628840042765-356cda07504e" },
     { name: "Vegetarian Pizza", price: 13.99, restaurant: "Pizza Palace", description: "Loaded with fresh vegetables", image: "https://images.unsplash.com/photo-1541745537411-b8046dc6d66c" },
     { name: "BBQ Chicken Pizza", price: 15.99, restaurant: "Pizza Palace", description: "Tangy BBQ sauce with grilled chicken", image: "https://images.unsplash.com/photo-1595854341625-f33ee10dbf94" },
-    { name: "Hawaiian Pizza", price: 14.99, restaurant: "Pizza Palace", description: "Ham and pineapple combo", image: "https://images.unsplash.com/photo-1552539618-7eec9b4d1796" }
+    { name: "Hawaiian Pizza", price: 14.99, restaurant: "Pizza Palace", description: "Ham and pineapple combo", image: "https://images.unsplash.com/photo-1552539618-7eec9b4d1796" },
+    { name: "Four Cheese Pizza", price: 16.99, restaurant: "Pizza Palace", description: "Mozzarella, gorgonzola, parmesan, and ricotta", image: "https://images.unsplash.com/photo-1601924582970-9238bcb495d9" },
+    { name: "Mushroom Truffle Pizza", price: 18.99, restaurant: "Pizza Palace", description: "Gourmet pizza with truffle oil", image: "https://images.unsplash.com/photo-1593504049359-74330189a345" },
+    { name: "Meat Lovers Pizza", price: 17.99, restaurant: "Pizza Palace", description: "Pepperoni, sausage, bacon, and ham", image: "https://images.unsplash.com/photo-1590947132387-155cc02f3212" },
+    { name: "Buffalo Chicken Pizza", price: 16.99, restaurant: "Pizza Palace", description: "Spicy buffalo sauce with blue cheese", image: "https://images.unsplash.com/photo-1601924582970-9238bcb495d9" },
+    { name: "White Pizza", price: 15.99, restaurant: "Pizza Palace", description: "No tomato sauce, just cheese and garlic", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591" },
+    { name: "Calzone", price: 14.99, restaurant: "Pizza Palace", description: "Folded pizza with ricotta filling", image: "https://images.unsplash.com/photo-1601924582970-9238bcb495d9" },
+    { name: "Neapolitan Pizza", price: 16.99, restaurant: "Pizza Palace", description: "Authentic Italian thin crust pizza", image: "https://images.unsplash.com/photo-1593246049226-ded77bf90326" }
   ],
   biryani: [
     { name: "Chicken Biryani", price: 10.99, restaurant: "Spice Garden", description: "Fragrant rice with tender chicken pieces", image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a" },
     { name: "Vegetable Biryani", price: 8.99, restaurant: "Spice Garden", description: "Flavorful rice with mixed vegetables", image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc" },
     { name: "Mutton Biryani", price: 14.99, restaurant: "Spice Garden", description: "Rich and spicy mutton biryani", image: "https://images.unsplash.com/photo-1601050690597-df0568f70950" },
     { name: "Egg Biryani", price: 9.99, restaurant: "Spice Garden", description: "Biryani with boiled eggs", image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b" },
-    { name: "Prawn Biryani", price: 16.99, restaurant: "Spice Garden", description: "Seafood delight with prawns", image: "https://images.unsplash.com/photo-1601050690597-df0568f70950" }
+    { name: "Prawn Biryani", price: 16.99, restaurant: "Spice Garden", description: "Seafood delight with prawns", image: "https://images.unsplash.com/photo-1601050690597-df0568f70950" },
+    { name: "Hyderabadi Biryani", price: 15.99, restaurant: "Spice Garden", description: "Authentic Hyderabadi dum biryani", image: "https://images.unsplash.com/photo-1633945274309-2c16cf8787b1" },
+    { name: "Kolkata Biryani", price: 14.99, restaurant: "Spice Garden", description: "With potato and boiled egg", image: "https://images.unsplash.com/photo-1633945274309-2c16cf8787b1" },
+    { name: "Paneer Biryani", price: 12.99, restaurant: "Spice Garden", description: "Vegetarian delight with cottage cheese", image: "https://images.unsplash.com/photo-1633945274309-2c16cf8787b1" },
+    { name: "Sindhi Biryani", price: 13.99, restaurant: "Spice Garden", description: "With yogurt and dried plums", image: "https://images.unsplash.com/photo-1633945274309-2c16cf8787b1" },
+    { name: "Kashmiri Biryani", price: 16.99, restaurant: "Spice Garden", description: "With dried fruits and nuts", image: "https://images.unsplash.com/photo-1633945274309-2c16cf8787b1" },
+    { name: "Thalassery Biryani", price: 15.99, restaurant: "Spice Garden", description: "Malabar specialty with small grain rice", image: "https://images.unsplash.com/photo-1633945274309-2c16cf8787b1" },
+    { name: "Afghani Biryani", price: 17.99, restaurant: "Spice Garden", description: "Rich and meaty with distinct flavors", image: "https://images.unsplash.com/photo-1633945274309-2c16cf8787b1" }
   ],
   burgers: [
     { name: "Classic Burger", price: 8.99, restaurant: "Burger Barn", description: "Beef patty with lettuce and special sauce", image: "https://images.unsplash.com/photo-1559847844-5315695dadae" },
     { name: "Cheeseburger", price: 9.99, restaurant: "Burger Barn", description: "Classic with melted cheese", image: "https://images.unsplash.com/photo-1561758033-d89a9ad46330" },
     { name: "Bacon Burger", price: 11.99, restaurant: "Burger Barn", description: "With crispy bacon strips", image: "https://images.unsplash.com/photo-1553979459-d2229ba7433b" },
     { name: "Veggie Burger", price: 8.99, restaurant: "Burger Barn", description: "Plant-based patty with fresh veggies", image: "https://images.unsplash.com/photo-1554520735-0a6b8b6ce8b7" },
-    { name: "Double Patty Burger", price: 12.99, restaurant: "Burger Barn", description: "For those with a big appetite", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" }
+    { name: "Double Patty Burger", price: 12.99, restaurant: "Burger Barn", description: "For those with a big appetite", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" },
+    { name: "Mushroom Swiss Burger", price: 13.99, restaurant: "Burger Barn", description: "Sautéed mushrooms and Swiss cheese", image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9" },
+    { name: "BBQ Burger", price: 12.99, restaurant: "Burger Barn", description: "Smoky BBQ sauce and onion rings", image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9" },
+    { name: "Turkey Burger", price: 11.99, restaurant: "Burger Barn", description: "Lean turkey patty with cranberry sauce", image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9" },
+    { name: "Chicken Burger", price: 10.99, restaurant: "Burger Barn", description: "Grilled chicken breast with avocado", image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9" },
+    { name: "Breakfast Burger", price: 12.99, restaurant: "Burger Barn", description: "With fried egg and hash brown", image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9" },
+    { name: "Jalapeño Burger", price: 13.99, restaurant: "Burger Barn", description: "Spicy jalapeños and pepper jack cheese", image: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9" },
+    { name: "Black Bean Burger", price: 11.99, restaurant: "Burger Barn", description: "Vegan option with black bean patty", image: "https://images.unsplash.com/photo-1554520735-0a6b8b6ce8b7" }
   ],
   cakes: [
     { name: "Chocolate Cake", price: 19.99, restaurant: "Sweet Delights", description: "Rich chocolate cake with fudge icing", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587" },
     { name: "Red Velvet Cake", price: 22.99, restaurant: "Sweet Delights", description: "Classic red velvet with cream cheese frosting", image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c" },
     { name: "Cheesecake", price: 16.99, restaurant: "Sweet Delights", description: "New York style cheesecake", image: "https://images.unsplash.com/photo-1543745800-9aee9a042745" },
     { name: "Black Forest", price: 21.99, restaurant: "Sweet Delights", description: "Chocolate cake with cherries and cream", image: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e" },
-    { name: "Tiramisu", price: 18.99, restaurant: "Sweet Delights", description: "Italian coffee-flavored dessert", image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb" }
+    { name: "Tiramisu", price: 18.99, restaurant: "Sweet Delights", description: "Italian coffee-flavored dessert", image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb" },
+    { name: "Carrot Cake", price: 20.99, restaurant: "Sweet Delights", description: "With cream cheese frosting and walnuts", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587" },
+    { name: "Lemon Drizzle Cake", price: 17.99, restaurant: "Sweet Delights", description: "Tangy lemon glaze on moist cake", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587" },
+    { name: "Victoria Sponge", price: 18.99, restaurant: "Sweet Delights", description: "Classic British cake with jam and cream", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587" },
+    { name: "Opera Cake", price: 24.99, restaurant: "Sweet Delights", description: "French layered coffee and chocolate cake", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587" },
+    { name: "Chiffon Cake", price: 19.99, restaurant: "Sweet Delights", description: "Light and airy sponge cake", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587" },
+    { name: "Fruit Cake", price: 22.99, restaurant: "Sweet Delights", description: "Dense cake with dried fruits and nuts", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587" },
+    { name: "Angel Food Cake", price: 17.99, restaurant: "Sweet Delights", description: "Light sponge cake with whipped cream", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587" }
   ],
   chicken: [
     { name: "Fried Chicken", price: 9.99, restaurant: "Chicken Lovers", description: "Crispy fried chicken pieces", image: "https://images.unsplash.com/photo-1562967914-608f82629710" },
     { name: "Grilled Chicken", price: 11.99, restaurant: "Chicken Lovers", description: "Healthy grilled chicken with herbs", image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" },
     { name: "Chicken Wings", price: 8.99, restaurant: "Chicken Lovers", description: "Spicy or BBQ flavored wings", image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f" },
     { name: "Chicken Curry", price: 10.99, restaurant: "Chicken Lovers", description: "Traditional chicken curry with rice", image: "https://images.unsplash.com/photo-1546069901-2c6d3a5a5c5a" },
-    { name: "Chicken Sandwich", price: 7.99, restaurant: "Chicken Lovers", description: "Grilled chicken sandwich with veggies", image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b" }
+    { name: "Chicken Sandwich", price: 7.99, restaurant: "Chicken Lovers", description: "Grilled chicken sandwich with veggies", image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b" },
+    { name: "Chicken Parmesan", price: 13.99, restaurant: "Chicken Lovers", description: "Breaded chicken with marinara and cheese", image: "https://images.unsplash.com/photo-1562967914-608f82629710" },
+    { name: "Chicken Tikka Masala", price: 12.99, restaurant: "Chicken Lovers", description: "Creamy Indian chicken dish", image: "https://images.unsplash.com/photo-1546069901-2c6d3a5a5c5a" },
+    { name: "Chicken Shawarma", price: 10.99, restaurant: "Chicken Lovers", description: "Middle Eastern spiced chicken wrap", image: "https://images.unsplash.com/photo-1630450202872-e1d1f6a5b2c5" },
+    { name: "Chicken Fajitas", price: 14.99, restaurant: "Chicken Lovers", description: "Sizzling chicken with peppers and onions", image: "https://images.unsplash.com/photo-1562967914-608f82629710" },
+    { name: "Chicken Nuggets", price: 8.99, restaurant: "Chicken Lovers", description: "Bite-sized breaded chicken pieces", image: "https://images.unsplash.com/photo-1562967914-608f82629710" },
+    { name: "Chicken Pot Pie", price: 11.99, restaurant: "Chicken Lovers", description: "Creamy chicken and vegetable pie", image: "https://images.unsplash.com/photo-1562967914-608f82629710" },
+    { name: "Chicken Satay", price: 9.99, restaurant: "Chicken Lovers", description: "Skewered chicken with peanut sauce", image: "https://images.unsplash.com/photo-1562967914-608f82629710" }
+  ],
+  cafe: [
+    { name: "Cappuccino", price: 4.99, restaurant: "Urban Cafe", description: "Espresso with steamed milk foam", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" },
+    { name: "Latte", price: 5.49, restaurant: "Urban Cafe", description: "Espresso with a lot of steamed milk", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" },
+    { name: "Americano", price: 3.99, restaurant: "Urban Cafe", description: "Espresso with hot water", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" },
+    { name: "Espresso", price: 3.49, restaurant: "Urban Cafe", description: "Strong black coffee", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" },
+    { name: "Mocha", price: 5.99, restaurant: "Urban Cafe", description: "Chocolate-flavored latte", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" },
+    { name: "Flat White", price: 5.49, restaurant: "Urban Cafe", description: "Similar to latte but with microfoam", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" },
+    { name: "Macchiato", price: 4.49, restaurant: "Urban Cafe", description: "Espresso with a dollop of foam", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" },
+    { name: "Cold Brew", price: 5.99, restaurant: "Urban Cafe", description: "Slow-steeped cold coffee", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" },
+    { name: "Iced Coffee", price: 4.99, restaurant: "Urban Cafe", description: "Chilled coffee with ice", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" },
+    { name: "Chai Latte", price: 4.99, restaurant: "Urban Cafe", description: "Spiced Indian tea with milk", image: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9" },
+    { name: "Hot Chocolate", price: 4.99, restaurant: "Urban Cafe", description: "Rich chocolate drink", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" },
+    { name: "Matcha Latte", price: 5.99, restaurant: "Urban Cafe", description: "Green tea powder with milk", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86" }
+  ],
+  pasta: [
+    { name: "Spaghetti Carbonara", price: 14.99, restaurant: "Pasta Paradise", description: "Classic pasta with egg, cheese, and pancetta", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Fettuccine Alfredo", price: 15.99, restaurant: "Pasta Paradise", description: "Creamy sauce with parmesan cheese", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Penne Arrabiata", price: 13.99, restaurant: "Pasta Paradise", description: "Spicy tomato sauce with garlic", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Lasagna", price: 16.99, restaurant: "Pasta Paradise", description: "Layered pasta with meat and cheese", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Ravioli", price: 15.99, restaurant: "Pasta Paradise", description: "Stuffed pasta with various fillings", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Pasta Primavera", price: 14.99, restaurant: "Pasta Paradise", description: "With fresh spring vegetables", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Bolognese", price: 15.99, restaurant: "Pasta Paradise", description: "Meat sauce with tomatoes", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Pesto Pasta", price: 14.99, restaurant: "Pasta Paradise", description: "Basil pesto with pine nuts", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Mac and Cheese", price: 12.99, restaurant: "Pasta Paradise", description: "Classic comfort food", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Seafood Pasta", price: 18.99, restaurant: "Pasta Paradise", description: "With shrimp, mussels, and clams", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Mushroom Risotto", price: 16.99, restaurant: "Pasta Paradise", description: "Creamy rice dish with mushrooms", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" },
+    { name: "Tortellini", price: 15.99, restaurant: "Pasta Paradise", description: "Ring-shaped pasta with meat filling", image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb" }
+  ],
+  snacks: [
+    { name: "French Fries", price: 4.99, restaurant: "Snack Shack", description: "Crispy golden fries", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Onion Rings", price: 5.99, restaurant: "Snack Shack", description: "Breaded and deep-fried onions", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Mozzarella Sticks", price: 6.99, restaurant: "Snack Shack", description: "Fried cheese sticks with marinara", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Nachos", price: 8.99, restaurant: "Snack Shack", description: "Tortilla chips with cheese and toppings", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Potato Wedges", price: 5.99, restaurant: "Snack Shack", description: "Seasoned potato wedges", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Garlic Bread", price: 4.99, restaurant: "Snack Shack", description: "Toasted bread with garlic butter", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Chicken Quesadilla", price: 7.99, restaurant: "Snack Shack", description: "Grilled tortilla with chicken and cheese", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Samosa", price: 5.99, restaurant: "Snack Shack", description: "Spiced potato filled pastry", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Spring Rolls", price: 6.99, restaurant: "Snack Shack", description: "Crispy vegetable rolls", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Chicken Tenders", price: 7.99, restaurant: "Snack Shack", description: "Breaded chicken strips", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Pretzel", price: 4.99, restaurant: "Snack Shack", description: "Soft baked pretzel with mustard", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
+    { name: "Popcorn Chicken", price: 6.99, restaurant: "Snack Shack", description: "Bite-sized fried chicken pieces", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" }
   ]
 };
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Check for saved theme preference
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
+
+  // Theme toggle functionality
+  document.getElementById('themeToggle').addEventListener('click', function() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+  });
+
+  // Load initial food items
+  loadFoodItems('pizza');
+
   // Modal elements
   const registerModal = document.getElementById('registerModal');
   const loginModal = document.getElementById('loginModal');
+  const cartModal = document.getElementById('cartModal');
   const registerForms = document.getElementById('registerForms');
   const loginForm = document.getElementById('loginForm');
   const closeButtons = document.querySelectorAll('.close');
@@ -107,6 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
     button.addEventListener('click', function() {
       registerModal.style.display = 'none';
       loginModal.style.display = 'none';
+      cartModal.style.display = 'none';
     });
   });
   
@@ -118,14 +364,22 @@ document.addEventListener('DOMContentLoaded', function() {
     if (event.target === loginModal) {
       loginModal.style.display = 'none';
     }
+    if (event.target === cartModal) {
+      cartModal.style.display = 'none';
+    }
   });
   
   // Login form submission
   loginForm.addEventListener('submit', function(e) {
     e.preventDefault();
     const userType = document.getElementById('loginType').value;
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    
+    if (!userType || !username || !password) {
+      alert('Please fill in all fields');
+      return;
+    }
     
     authenticateUser(userType, username, password);
   });
@@ -134,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.category-card').forEach(card => {
     card.addEventListener('click', function() {
       const category = this.querySelector('h3').textContent.toLowerCase();
-      showFoodItems(category);
+      loadFoodItems(category);
     });
   });
   
@@ -148,1287 +402,1358 @@ document.addEventListener('DOMContentLoaded', function() {
       alert('Please enter a search term');
     }
   });
+
+  // Cart button (initially hidden)
+  document.getElementById('cartBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    showCartModal();
+  });
+
+  // Initialize account dropdown (hidden by default)
+  const accountBtn = document.getElementById('accountBtn');
+  const accountDropdown = document.getElementById('accountDropdown');
   
-  // Show register modal
-  function showRegisterModal() {
-    registerModal.style.display = 'block';
-    registerForms.innerHTML = '<p>Please select a user type from the register dropdown menu.</p>';
+  if (accountBtn) {
+    accountBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      accountDropdown.style.display = accountDropdown.style.display === 'block' ? 'none' : 'block';
+    });
   }
   
-  // Show specific register form
-  function showRegisterForm(userType) {
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.auth-dropdown')) {
+      if (accountDropdown) accountDropdown.style.display = 'none';
+    }
+  });
+});
+
+function updateThemeIcon(theme) {
+  const themeIcon = document.querySelector('#themeToggle i');
+  if (theme === 'dark') {
+    themeIcon.classList.remove('fa-moon');
+    themeIcon.classList.add('fa-sun');
+  } else {
+    themeIcon.classList.remove('fa-sun');
+    themeIcon.classList.add('fa-moon');
+  }
+}
+
+// Load food items function
+function loadFoodItems(category) {
+    const items = foodData[category];
+    if (!items) {
+        alert(`No items found for category: ${category}`);
+        return;
+    }
+    
+    const foodGrid = document.getElementById('foodGrid');
+    foodGrid.innerHTML = items.map(item => `
+        <div class="food-card">
+            <div class="food-img">
+                <img src="${item.image}" alt="${item.name}">
+            </div>
+            <div class="food-info">
+                <h3>${item.name}</h3>
+                <p>${item.restaurant}</p>
+                <p class="food-description">${item.description}</p>
+                <div class="food-footer">
+                    <span class="price">৳${(item.price * exchangeRate).toFixed(2)}</span>
+                    <button class="btn btn-sm btn-primary add-to-cart" 
+                            data-id="${item.id}" 
+                            data-name="${item.name}" 
+                            data-price="${item.price}" 
+                            data-restaurant="${item.restaurant}">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    // Update section title to show the category name
+    document.querySelector('.recommended .section-title').textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} Items`;
+    
+    // Only scroll if this is not the initial load
+    if (window.hasLoaded) {
+        document.querySelector('.recommended').scrollIntoView({ behavior: 'smooth' });
+    } else {
+        window.hasLoaded = true;
+    }
+    
+    // Add event listeners to add-to-cart buttons
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const name = this.getAttribute('data-name');
+            const price = parseFloat(this.getAttribute('data-price'));
+            const restaurant = this.getAttribute('data-restaurant');
+            
+            addToCart(id, name, price, restaurant);
+        });
+    });
+}
+  
+// Add item to cart
+function addToCart(id, name, price, restaurant) {
+    if (!currentUser || currentUser.type !== 'user') {
+        alert('Please login as a user to add items to cart');
+        showLoginModal();
+        return;
+    }
+    
+    const user = users.user.find(u => u.username === currentUser.username);
+    if (!user) return;
+    
+    // Check if item already exists in cart
+    const existingItem = user.cart.find(item => item.id == id && item.restaurant === restaurant);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        user.cart.push({
+            id,
+            name,
+            price,
+            restaurant,
+            quantity: 1
+        });
+    }
+    
+    updateCartCount();
+    showToast(`${name} added to cart!`);
+}
+
+// Show cart modal
+function showCartModal() {
+    if (!currentUser || currentUser.type !== 'user') {
+        alert('Please login as a user to view cart');
+        showLoginModal();
+        return;
+    }
+    
+    const user = users.user.find(u => u.username === currentUser.username);
+    if (!user) return;
+    
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    
+    if (user.cart.length === 0) {
+        cartItems.innerHTML = '<p>Your cart is empty</p>';
+        cartTotal.textContent = '৳0.00';
+    } else {
+        cartItems.innerHTML = user.cart.map(item => `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <h4>${item.name}</h4>
+                    <p>${item.restaurant} • ৳${(item.price * exchangeRate).toFixed(2)}</p>
+                </div>
+                <div class="cart-item-actions">
+                    <div class="cart-item-quantity">
+                        <button class="btn btn-sm btn-outline decrease-quantity" data-id="${item.id}" data-restaurant="${item.restaurant}">-</button>
+                        <span>${item.quantity}</span>
+                        <button class="btn btn-sm btn-outline increase-quantity" data-id="${item.id}" data-restaurant="${item.restaurant}">+</button>
+                    </div>
+                    <button class="btn btn-sm btn-danger remove-item" data-id="${item.id}" data-restaurant="${item.restaurant}">Remove</button>
+                </div>
+            </div>
+        `).join('');
+        
+        const total = user.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cartTotal.textContent = `৳${(total * exchangeRate).toFixed(2)}`;
+        
+        // Add event listeners for quantity buttons
+        document.querySelectorAll('.increase-quantity').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const restaurant = this.getAttribute('data-restaurant');
+                const item = user.cart.find(item => item.id == id && item.restaurant === restaurant);
+                if (item) {
+                    item.quantity += 1;
+                    showCartModal();
+                }
+            });
+        });
+        
+        document.querySelectorAll('.decrease-quantity').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const restaurant = this.getAttribute('data-restaurant');
+                const item = user.cart.find(item => item.id == id && item.restaurant === restaurant);
+                if (item) {
+                    if (item.quantity > 1) {
+                        item.quantity -= 1;
+                    } else {
+                        user.cart = user.cart.filter(item => !(item.id == id && item.restaurant === restaurant));
+                    }
+                    showCartModal();
+                }
+            });
+        });
+        
+        document.querySelectorAll('.remove-item').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const restaurant = this.getAttribute('data-restaurant');
+                user.cart = user.cart.filter(item => !(item.id == id && item.restaurant === restaurant));
+                showCartModal();
+                updateCartCount();
+            });
+        });
+    }
+    
+    // Checkout button
+    document.getElementById('checkoutBtn').addEventListener('click', function() {
+        checkout(user);
+    });
+    
+    // Clear cart button
+    document.getElementById('clearCartBtn').addEventListener('click', function() {
+        if (confirm('Are you sure you want to clear your cart?')) {
+            user.cart = [];
+            showCartModal();
+            updateCartCount();
+            showToast('Cart cleared successfully!');
+        }
+    });
+    
+    cartModal.style.display = 'block';
+}
+  
+// Show toast notification
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
+    }, 3000);
+}
+  
+// Update cart count in header
+function updateCartCount() {
+    if (!currentUser || currentUser.type !== 'user') return;
+    
+    const user = users.user.find(u => u.username === currentUser.username);
+    if (!user) return;
+    
+    const cartCount = user.cart.reduce((total, item) => total + item.quantity, 0);
+    const cartBtn = document.getElementById('cartBtn');
+    
+    if (cartBtn) {
+        if (cartCount > 0) {
+            cartBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Cart (${cartCount})`;
+        } else {
+            cartBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Cart`;
+        }
+    }
+}
+  
+// Checkout process
+function checkout(user) {
+    if (user.cart.length === 0) {
+        alert('Your cart is empty');
+        return;
+    }
+    
+    // Create new order
+    const newOrder = {
+        id: generateOrderId(),
+        userId: user.username,
+        restaurantId: user.cart[0].restaurant,
+        items: [...user.cart],
+        total: user.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+        status: "pending",
+        date: new Date().toISOString().split('T')[0],
+        deliveryPerson: ""
+    };
+    
+    // Add order to user's order history
+    user.orders.push(newOrder);
+    
+    // Add order to restaurant's order list
+    const restaurant = users.restaurant.find(r => r.restaurant === user.cart[0].restaurant);
+    if (restaurant) {
+        restaurant.orders.push(newOrder);
+    }
+    
+    // Add order to global orders list
+    orders.push(newOrder);
+    
+    // Clear cart
+    user.cart = [];
+    
+    // Close cart modal
+    document.getElementById('cartModal').style.display = 'none';
+    
+    // Update cart count
+    updateCartCount();
+    
+    showToast(`Order #${newOrder.id} placed successfully! Total: ৳${(newOrder.total * exchangeRate).toFixed(2)}`);
+    
+    // If user is on dashboard, refresh orders
+    if (document.getElementById('dashboardContainer').style.display === 'block') {
+        showDashboard();
+    }
+}
+  
+// Generate unique order ID
+function generateOrderId() {
+    return Math.floor(1000 + Math.random() * 9000);
+}
+  
+// Show register modal
+function showRegisterModal() {
+    document.getElementById('registerModal').style.display = 'block';
+    document.getElementById('registerForms').innerHTML = '<p>Please select a user type from the register dropdown menu.</p>';
+}
+  
+// Show specific register form
+function showRegisterForm(userType) {
+    const registerModal = document.getElementById('registerModal');
     registerModal.style.display = 'block';
     
     let formHTML = '';
     const formId = `${userType}RegisterForm`;
     
     switch(userType) {
-      case 'restaurant':
-        formHTML = `
-          <form id="${formId}">
-            <div class="form-group">
-              <label for="restaurantName">Restaurant Name:</label>
-              <input type="text" id="restaurantName" required>
-            </div>
-            <div class="form-group">
-              <label for="restaurantUsername">Username:</label>
-              <input type="text" id="restaurantUsername" required>
-            </div>
-            <div class="form-group">
-              <label for="restaurantPassword">Password:</label>
-              <input type="password" id="restaurantPassword" required>
-            </div>
-            <div class="form-group">
-              <label for="restaurantCuisine">Cuisine Type:</label>
-              <input type="text" id="restaurantCuisine" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Register</button>
-          </form>
-        `;
-        break;
-      case 'user':
-        formHTML = `
-          <form id="${formId}">
-            <div class="form-group">
-              <label for="userName">Full Name:</label>
-              <input type="text" id="userName" required>
-            </div>
-            <div class="form-group">
-              <label for="userUsername">Username:</label>
-              <input type="text" id="userUsername" required>
-            </div>
-            <div class="form-group">
-              <label for="userPassword">Password:</label>
-              <input type="password" id="userPassword" required>
-            </div>
-            <div class="form-group">
-              <label for="userAddress">Delivery Address:</label>
-              <input type="text" id="userAddress" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Register</button>
-          </form>
-        `;
-        break;
-      case 'delivery':
-        formHTML = `
-          <form id="${formId}">
-            <div class="form-group">
-              <label for="deliveryName">Full Name:</label>
-              <input type="text" id="deliveryName" required>
-            </div>
-            <div class="form-group">
-              <label for="deliveryUsername">Username:</label>
-              <input type="text" id="deliveryUsername" required>
-            </div>
-            <div class="form-group">
-              <label for="deliveryPassword">Password:</label>
-              <input type="password" id="deliveryPassword" required>
-            </div>
-            <div class="form-group">
-              <label for="deliveryVehicle">Vehicle Type:</label>
-              <select id="deliveryVehicle" required>
-                <option value="bike">Bike</option>
-                <option value="car">Car</option>
-                <option value="scooter">Scooter</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Register</button>
-          </form>
-        `;
-        break;
+        case 'restaurant':
+            formHTML = `
+                <form id="${formId}">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="restaurantName">Restaurant Name:</label>
+                            <input type="text" id="restaurantName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="restaurantUsername">Username:</label>
+                            <input type="text" id="restaurantUsername" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="restaurantPassword">Password:</label>
+                            <input type="password" id="restaurantPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="restaurantConfirmPassword">Confirm Password:</label>
+                            <input type="password" id="restaurantConfirmPassword" required minlength="6">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="restaurantOwnerName">Owner Name:</label>
+                        <input type="text" id="restaurantOwnerName" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="restaurantEmail">Email:</label>
+                            <input type="email" id="restaurantEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="restaurantPhone">Phone:</label>
+                            <input type="tel" id="restaurantPhone" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="restaurantAddress">Address:</label>
+                        <textarea id="restaurantAddress" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="restaurantCuisine">Cuisine Type:</label>
+                            <input type="text" id="restaurantCuisine" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="restaurantOpeningHours">Opening Hours:</label>
+                            <input type="text" id="restaurantOpeningHours" placeholder="e.g. 10:00 AM - 10:00 PM" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="restaurantDeliveryRadius">Delivery Radius (km):</label>
+                        <input type="number" id="restaurantDeliveryRadius" min="1" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Register Restaurant</button>
+                </form>
+            `;
+            break;
+            
+        case 'delivery':
+            formHTML = `
+                <form id="${formId}">
+                    <div class="form-group">
+                        <label for="deliveryName">Full Name:</label>
+                        <input type="text" id="deliveryName" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="deliveryUsername">Username:</label>
+                            <input type="text" id="deliveryUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="deliveryPassword">Password:</label>
+                            <input type="password" id="deliveryPassword" required minlength="6">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="deliveryConfirmPassword">Confirm Password:</label>
+                            <input type="password" id="deliveryConfirmPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="deliveryEmail">Email:</label>
+                            <input type="email" id="deliveryEmail" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="deliveryPhone">Phone:</label>
+                            <input type="tel" id="deliveryPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="deliveryVehicleType">Vehicle Type:</label>
+                            <select id="deliveryVehicleType" required>
+                                <option value="">Select Vehicle</option>
+                                <option value="bike">Bike</option>
+                                <option value="car">Car</option>
+                                <option value="scooter">Scooter</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deliveryLicense">License Number:</label>
+                        <input type="text" id="deliveryLicense" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deliveryAddress">Address:</label>
+                        <textarea id="deliveryAddress" rows="3" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Register as Delivery</button>
+                </form>
+            `;
+            break;
+            
+        case 'user':
+        default:
+            formHTML = `
+                <form id="${formId}">
+                    <div class="form-group">
+                        <label for="userName">Full Name:</label>
+                        <input type="text" id="userName" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userUsername">Username:</label>
+                            <input type="text" id="userUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userPassword">Password:</label>
+                            <input type="password" id="userPassword" required minlength="6">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userConfirmPassword">Confirm Password:</label>
+                            <input type="password" id="userConfirmPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="userEmail">Email:</label>
+                            <input type="email" id="userEmail" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userPhone">Phone:</label>
+                            <input type="tel" id="userPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userCity">City:</label>
+                            <input type="text" id="userCity" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="userAddress">Address:</label>
+                        <textarea id="userAddress" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userPostalCode">Postal Code:</label>
+                            <input type="text" id="userPostalCode" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userCountry">Country:</label>
+                            <input type="text" id="userCountry" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Register as User</button>
+                </form>
+            `;
     }
     
-    registerForms.innerHTML = `<h3>Register as ${userType.charAt(0).toUpperCase() + userType.slice(1)}</h3>` + formHTML;
+    document.getElementById('registerForms').innerHTML = formHTML;
     
     // Add form submission handler
-    document.getElementById(formId).addEventListener('submit', function(e) {
-      e.preventDefault();
-      const username = document.getElementById(`${userType}Username`).value;
-      const password = document.getElementById(`${userType}Password`).value;
-      
-      // Add the new user to the appropriate array
-      const newUser = { username, password, name: document.getElementById(`${userType}Name`).value };
-      if (userType === 'restaurant') {
-        newUser.restaurant = document.getElementById('restaurantName').value;
-      }
-      
-      users[userType] = users[userType] || [];
-      users[userType].push(newUser);
-      
-      alert(`Registration successful! You can now login as ${userType}.`);
-      registerModal.style.display = 'none';
-    });
-  }
+    const form = document.getElementById(formId);
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            registerUser(userType);
+        });
+    }
+}
   
-  // Show login modal
-  function showLoginModal() {
-    loginModal.style.display = 'block';
-  }
-  
-  // Authenticate user
-  function authenticateUser(userType, username, password) {
-    const userList = users[userType];
-    if (!userList) {
-      alert('Invalid user type');
-      return;
+// Register new user
+function registerUser(userType) {
+    let userData = {};
+    let username, password, confirmPassword;
+    
+    switch(userType) {
+        case 'restaurant':
+            username = document.getElementById('restaurantUsername').value.trim();
+            password = document.getElementById('restaurantPassword').value.trim();
+            confirmPassword = document.getElementById('restaurantConfirmPassword').value.trim();
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            // Check if username already exists
+            if (users.restaurant.some(u => u.username === username)) {
+                alert('Username already exists');
+                return;
+            }
+            
+            userData = {
+                username,
+                password,
+                name: document.getElementById('restaurantOwnerName').value.trim(),
+                restaurant: document.getElementById('restaurantName').value.trim(),
+                email: document.getElementById('restaurantEmail').value.trim(),
+                phone: document.getElementById('restaurantPhone').value.trim(),
+                address: document.getElementById('restaurantAddress').value.trim(),
+                cuisine: document.getElementById('restaurantCuisine').value.trim(),
+                openingHours: document.getElementById('restaurantOpeningHours').value.trim(),
+                deliveryRadius: document.getElementById('restaurantDeliveryRadius').value.trim(),
+                joinDate: new Date().toISOString().split('T')[0],
+                status: 'pending',
+                menu: [],
+                orders: []
+            };
+            
+            users.restaurant.push(userData);
+            break;
+            
+        case 'delivery':
+            username = document.getElementById('deliveryUsername').value.trim();
+            password = document.getElementById('deliveryPassword').value.trim();
+            confirmPassword = document.getElementById('deliveryConfirmPassword').value.trim();
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            // Check if username already exists
+            if (users.delivery.some(u => u.username === username)) {
+                alert('Username already exists');
+                return;
+            }
+            
+            userData = {
+                username,
+                password,
+                name: document.getElementById('deliveryName').value.trim(),
+                email: document.getElementById('deliveryEmail').value.trim(),
+                phone: document.getElementById('deliveryPhone').value.trim(),
+                vehicleType: document.getElementById('deliveryVehicleType').value,
+                licenseNumber: document.getElementById('deliveryLicense').value.trim(),
+                address: document.getElementById('deliveryAddress').value.trim(),
+                joinDate: new Date().toISOString().split('T')[0],
+                status: 'pending',
+                availability: 'full-time',
+                deliveries: []
+            };
+            
+            users.delivery.push(userData);
+            break;
+            
+        case 'user':
+        default:
+            username = document.getElementById('userUsername').value.trim();
+            password = document.getElementById('userPassword').value.trim();
+            confirmPassword = document.getElementById('userConfirmPassword').value.trim();
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            // Check if username already exists
+            if (users.user.some(u => u.username === username)) {
+                alert('Username already exists');
+                return;
+            }
+            
+            userData = {
+                username,
+                password,
+                name: document.getElementById('userName').value.trim(),
+                email: document.getElementById('userEmail').value.trim(),
+                phone: document.getElementById('userPhone').value.trim(),
+                address: document.getElementById('userAddress').value.trim(),
+                city: document.getElementById('userCity').value.trim(),
+                postalCode: document.getElementById('userPostalCode').value.trim(),
+                country: document.getElementById('userCountry').value.trim(),
+                joinDate: new Date().toISOString().split('T')[0],
+                status: 'active',
+                paymentMethods: [],
+                orders: [],
+                cart: []
+            };
+            
+            users.user.push(userData);
     }
     
-    const user = userList.find(u => u.username === username && u.password === password);
+    document.getElementById('registerModal').style.display = 'none';
+    showToast(`Registration successful! Welcome ${userData.name || userData.restaurant || userData.username}`);
+    
+    // Auto-login for users
+    if (userType === 'user') {
+        currentUser = {
+            type: 'user',
+            username: userData.username
+        };
+        updateUIAfterLogin();
+    }
+}
+  
+// Show login modal
+function showLoginModal() {
+    document.getElementById('loginModal').style.display = 'block';
+    document.getElementById('loginType').value = '';
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+}
+  
+// Authenticate user
+function authenticateUser(userType, username, password) {
+    let user;
+    
+    switch(userType) {
+        case 'admin':
+            user = users.admin.find(u => u.username === username && u.password === password);
+            break;
+        case 'restaurant':
+            user = users.restaurant.find(u => u.username === username && u.password === password);
+            break;
+        case 'delivery':
+            user = users.delivery.find(u => u.username === username && u.password === password);
+            break;
+        case 'user':
+            user = users.user.find(u => u.username === username && u.password === password);
+            break;
+        default:
+            alert('Invalid user type');
+            return;
+    }
     
     if (user) {
-      currentUser = { ...user, type: userType };
-      alert(`Welcome ${user.name}!`);
-      loginModal.style.display = 'none';
-      showDashboard();
-    } else {
-      alert('Invalid credentials');
-    }
-  }
-  
-  // Show food items for a category
-  function showFoodItems(category) {
-    const items = foodData[category];
-    if (!items) {
-      alert('No items found for this category');
-      return;
-    }
-    
-    const foodGrid = document.querySelector('.food-grid');
-    if (!foodGrid) {
-      alert('Food grid not found');
-      return;
-    }
-    
-    foodGrid.innerHTML = items.map(item => `
-      <div class="food-card">
-        <div class="food-img">
-          <img src="${item.image}?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="${item.name}">
-        </div>
-        <div class="food-info">
-          <h3>${item.name}</h3>
-          <p>${item.restaurant}</p>
-          <p class="food-description">${item.description}</p>
-          <div class="food-footer">
-            <span class="price">৳${(item.price * exchangeRate).toFixed(2)}</span>
-            <button class="btn btn-sm btn-primary">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-    `).join('');
-    
-    // Scroll to the food section
-    document.querySelector('.recommended').scrollIntoView({ behavior: 'smooth' });
-  }
-  
-  // Search food items
-  function searchFoodItems(searchTerm) {
-    const results = [];
-    for (const category in foodData) {
-      foodData[category].forEach(item => {
-        if (item.name.toLowerCase().includes(searchTerm)) {
-          results.push(item);
+        currentUser = {
+            type: userType,
+            username: user.username
+        };
+        
+        document.getElementById('loginModal').style.display = 'none';
+        updateUIAfterLogin();
+        showToast(`Welcome back, ${user.name || user.restaurant || user.username}!`);
+        
+        // Show dashboard if not a regular user
+        if (userType !== 'user') {
+            showDashboard();
         }
-      });
+    } else {
+        alert('Invalid username or password');
     }
-    return results;
-  }
+}
   
-  // Show search results
-  function showSearchResults(results, searchTerm) {
-    if (results.length === 0) {
-      alert(`No items found for "${searchTerm}"`);
-      return;
+// Update UI after login
+function updateUIAfterLogin() {
+    // Hide login/register buttons
+    document.getElementById('registerBtn').style.display = 'none';
+    document.getElementById('loginBtn').style.display = 'none';
+    
+    // Show account dropdown and cart button
+    document.getElementById('accountDropdownContainer').style.display = 'block';
+    document.getElementById('cartBtn').style.display = 'inline-block';
+    
+    // Update account button text
+    const user = getUserData();
+    if (user) {
+        const displayName = user.name || user.restaurant || user.username;
+        document.getElementById('accountBtn').innerHTML = `<i class="fas fa-user-circle"></i> ${displayName}`;
     }
     
-    const foodGrid = document.querySelector('.food-grid');
-    foodGrid.innerHTML = results.map(item => `
-      <div class="food-card">
-        <div class="food-img">
-          <img src="${item.image}?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&q=80" alt="${item.name}">
-        </div>
-        <div class="food-info">
-          <h3>${item.name}</h3>
-          <p>${item.restaurant}</p>
-          <p class="food-description">${item.description}</p>
-          <div class="food-footer">
-            <span class="price">৳${(item.price * exchangeRate).toFixed(2)}</span>
-            <button class="btn btn-sm btn-primary">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-    `).join('');
+    // Update cart count
+    updateCartCount();
     
-    document.querySelector('.recommended').scrollIntoView({ behavior: 'smooth' });
-  }
-  
-  // Show dashboard based on user type
-  function showDashboard() {
-    document.querySelector('main').style.display = 'none';
-    document.querySelector('footer').style.display = 'none';
+    // Clear previous event listeners to avoid duplicates
+    const dashboardBtn = document.getElementById('dashboardBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
     
-    const dashboardContainer = document.getElementById('dashboardContainer');
-    dashboardContainer.style.display = 'block';
-    dashboardContainer.innerHTML = '';
+    dashboardBtn.replaceWith(dashboardBtn.cloneNode(true));
+    logoutBtn.replaceWith(logoutBtn.cloneNode(true));
     
-    let dashboardHTML = `
-      <div class="dashboard-header">
-        <div class="container">
-          <div class="dashboard-nav">
-            <a href="#" id="homeBtn"><i class="fas fa-home"></i> Home</a>
-            <div class="dashboard-user">
-              <div class="user-dropdown">
-                <button id="userMenuBtn"><i class="fas fa-user-circle"></i> ${currentUser.name} <i class="fas fa-caret-down"></i></button>
-                <div id="userDropdown" class="dropdown-content">
-                  <a href="#" id="profileBtn"><i class="fas fa-user"></i> My Profile</a>
-                  ${currentUser.type === 'user' ? `
-                    <a href="#" id="ordersBtn"><i class="fas fa-clipboard-list"></i> My Orders</a>
-                    <a href="#" id="addressesBtn"><i class="fas fa-map-marker-alt"></i> My Addresses</a>
-                  ` : ''}
-                  ${currentUser.type === 'restaurant' ? `
-                    <a href="#" id="menuBtn"><i class="fas fa-utensils"></i> Menu Management</a>
-                    <a href="#" id="salesBtn"><i class="fas fa-chart-line"></i> Sales Analytics</a>
-                  ` : ''}
-                  ${currentUser.type === 'delivery' ? `
-                    <a href="#" id="deliveriesBtn"><i class="fas fa-motorcycle"></i> My Deliveries</a>
-                    <a href="#" id="mapBtn"><i class="fas fa-map"></i> Delivery Map</a>
-                  ` : ''}
-                  ${currentUser.type === 'admin' ? `
-                    <a href="#" id="manageUsersBtn"><i class="fas fa-users"></i> Manage Users</a>
-                    <a href="#" id="manageRestaurantsBtn"><i class="fas fa-store"></i> Manage Restaurants</a>
-                    <a href="#" id="systemAnalyticsBtn"><i class="fas fa-chart-pie"></i> System Analytics</a>
-                  ` : ''}
-                  <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="container ${currentUser.type}-dashboard">
-        <div id="dashboardContent">
-          <h2 class="dashboard-title">${currentUser.type.charAt(0).toUpperCase() + currentUser.type.slice(1)} Dashboard</h2>
-          <div class="welcome-message">
-            <p>Welcome back, ${currentUser.name}! What would you like to do today?</p>
-          </div>
-    `;
-    
-    // Add dashboard sections based on user type
-    switch(currentUser.type) {
-      case 'user':
-        dashboardHTML += `
-          <div class="dashboard-sections">
-            <div class="dashboard-card" id="userBrowseRestaurants">
-              <i class="fas fa-store"></i>
-              <h3>Browse Restaurants</h3>
-              <p>Find restaurants near you</p>
-            </div>
-            <div class="dashboard-card" id="userOrderHistory">
-              <i class="fas fa-history"></i>
-              <h3>Order History</h3>
-              <p>View your past orders</p>
-            </div>
-            <div class="dashboard-card" id="userTrackOrder">
-              <i class="fas fa-map-marked-alt"></i>
-              <h3>Track Order</h3>
-              <p>Follow your delivery in real-time</p>
-            </div>
-          </div>
-          <div class="recent-orders">
-            <h3>Recent Orders</h3>
-            <div class="order-list">
-              <div class="order-card">
-                <div class="order-header">
-                  <span class="order-id">Order #1001</span>
-                  <span class="order-date">Jan 15, 2023</span>
-                  <span class="order-status delivered">Delivered</span>
-                </div>
-                <div class="order-details">
-                  <p><strong>Pizza Palace</strong> - 1x Margherita Pizza, 1x Garlic Bread</p>
-                  <p>Total: ৳${(24.98 * exchangeRate).toFixed(2)}</p>
-                </div>
-                <div class="order-actions">
-                  <button class="btn btn-sm btn-primary">Reorder</button>
-                  <button class="btn btn-sm btn-outline">Rate Order</button>
-                </div>
-              </div>
-              <div class="order-card">
-                <div class="order-header">
-                  <span class="order-id">Order #1002</span>
-                  <span class="order-date">Jan 10, 2023</span>
-                  <span class="order-status in-progress">In Progress</span>
-                </div>
-                <div class="order-details">
-                  <p><strong>Burger Barn</strong> - 2x Classic Burger, 1x Fries</p>
-                  <p>Total: ৳${(18.99 * exchangeRate).toFixed(2)}</p>
-                </div>
-                <div class="order-actions">
-                  <button class="btn btn-sm btn-primary">Track</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        break;
-      case 'restaurant':
-        dashboardHTML += `
-          <div class="dashboard-sections">
-            <div class="dashboard-card" id="restaurantMenuManagement">
-              <i class="fas fa-utensils"></i>
-              <h3>Menu Management</h3>
-              <p>Add, edit or remove menu items</p>
-            </div>
-            <div class="dashboard-card" id="restaurantOrders">
-              <i class="fas fa-clipboard-list"></i>
-              <h3>Current Orders</h3>
-              <p>Manage incoming orders</p>
-            </div>
-            <div class="dashboard-card" id="restaurantAnalytics">
-              <i class="fas fa-chart-line"></i>
-              <h3>Sales Analytics</h3>
-              <p>View your business performance</p>
-            </div>
-          </div>
-          <div class="current-orders">
-            <h3>Orders Ready for Pickup</h3>
-            <div class="order-list">
-              <div class="order-card">
-                <div class="order-header">
-                  <span class="order-id">Order #1003</span>
-                  <span class="order-date">Today, 12:30 PM</span>
-                  <span class="order-status in-progress">Preparing</span>
-                </div>
-                <div class="order-details">
-                  <p>2x Margherita Pizza - ৳${(25.98 * exchangeRate).toFixed(2)}</p>
-                  <p>Customer: John Doe - Delivery Address: 123 Main St</p>
-                </div>
-                <div class="order-actions">
-                  <button class="btn btn-sm btn-primary">Mark as Ready</button>
-                  <button class="btn btn-sm btn-outline">Contact Delivery</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        break;
-      case 'delivery':
-        dashboardHTML += `
-          <div class="dashboard-sections">
-            <div class="dashboard-card" id="deliveryAssigned">
-              <i class="fas fa-motorcycle"></i>
-              <h3>Assigned Orders</h3>
-              <p>View your current deliveries</p>
-            </div>
-            <div class="dashboard-card" id="deliveryHistory">
-              <i class="fas fa-history"></i>
-              <h3>Delivery History</h3>
-              <p>View your past deliveries</p>
-            </div>
-            <div class="dashboard-card" id="deliveryMap">
-              <i class="fas fa-map-marked-alt"></i>
-              <h3>Delivery Map</h3>
-              <p>Navigate to delivery locations</p>
-            </div>
-          </div>
-          <div class="assigned-orders">
-            <h3>Your Current Delivery</h3>
-            <div class="order-list">
-              <div class="order-card">
-                <div class="order-header">
-                  <span class="order-id">Order #1003</span>
-                  <span class="order-date">Today, 12:30 PM</span>
-                  <span class="order-status in-progress">Ready for Pickup</span>
-                </div>
-                <div class="order-details">
-                  <p>Pizza Palace to 123 Main St</p>
-                  <p>2x Margherita Pizza - ৳${(25.98 * exchangeRate).toFixed(2)}</p>
-                  <p>Customer: John Doe - Phone: 0123456789</p>
-                </div>
-                <div class="order-actions">
-                  <button class="btn btn-sm btn-primary">Picked Up</button>
-                  <button class="btn btn-sm btn-primary">Delivered</button>
-                  <button class="btn btn-sm btn-outline">Navigate</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        break;
-      case 'admin':
-        dashboardHTML += `
-          <div class="dashboard-sections">
-            <div class="dashboard-card" id="adminUsers">
-              <i class="fas fa-users"></i>
-              <h3>Manage Users</h3>
-              <p>View and manage all users</p>
-            </div>
-            <div class="dashboard-card" id="adminRestaurants">
-              <i class="fas fa-store"></i>
-              <h3>Manage Restaurants</h3>
-              <p>Approve and manage restaurants</p>
-            </div>
-            <div class="dashboard-card" id="adminAnalytics">
-              <i class="fas fa-chart-pie"></i>
-              <h3>System Analytics</h3>
-              <p>View platform performance</p>
-            </div>
-          </div>
-          <div class="system-overview">
-            <h3>Quick Stats</h3>
-            <div class="stats-grid">
-              <div class="stat-card">
-                <h4>Total Users</h4>
-                <p>1,245</p>
-                <small>+12% this month</small>
-              </div>
-              <div class="stat-card">
-                <h4>Active Restaurants</h4>
-                <p>87</p>
-                <small>+5 this week</small>
-              </div>
-              <div class="stat-card">
-                <h4>Today's Orders</h4>
-                <p>342</p>
-                <small>৳${(8245.67 * exchangeRate).toFixed(2)}</small>
-              </div>
-              <div class="stat-card">
-                <h4>Revenue</h4>
-                <p>৳${(24567.89 * exchangeRate).toFixed(2)}</p>
-                <small>This month</small>
-              </div>
-            </div>
-          </div>
-        `;
-        break;
-    }
-    
-    dashboardHTML += `</div></div>`; // Close container and dashboardContent
-    dashboardContainer.innerHTML = dashboardHTML;
-    
-    // Add event listeners for dashboard buttons
-    document.getElementById('homeBtn').addEventListener('click', function(e) {
-      e.preventDefault();
-      location.reload();
+    // Add dashboard and logout functionality
+    document.getElementById('dashboardBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        showDashboard();
     });
     
     document.getElementById('logoutBtn').addEventListener('click', function(e) {
-      e.preventDefault();
-      currentUser = null;
-      location.reload();
+        e.preventDefault();
+        logout();
+    });
+}
+  
+// Get current user's data
+function getUserData() {
+    if (!currentUser) return null;
+    
+    switch(currentUser.type) {
+        case 'admin':
+            return users.admin.find(u => u.username === currentUser.username);
+        case 'restaurant':
+            return users.restaurant.find(u => u.username === currentUser.username);
+        case 'delivery':
+            return users.delivery.find(u => u.username === currentUser.username);
+        case 'user':
+            return users.user.find(u => u.username === currentUser.username);
+        default:
+            return null;
+    }
+}
+  
+// Show dashboard based on user type
+function showDashboard() {
+    const dashboardContainer = document.getElementById('dashboardContainer');
+    const mainContent = document.querySelector('main');
+    const mainFooter = document.querySelector('.footer');
+    
+    // Hide main content and footer
+    mainContent.style.display = 'none';
+    mainFooter.style.display = 'none';
+    
+    // Show dashboard
+    dashboardContainer.style.display = 'block';
+    
+    // Get user data
+    const user = getUserData();
+    if (!user) return;
+    
+    // Get dashboard container elements
+    const dashboardMain = dashboardContainer.querySelector('.dashboard-main .container');
+    
+    // Clear previous content
+    dashboardMain.innerHTML = '';
+    
+    // Create dashboard content
+    let dashboardHTML = `
+        <h1 class="dashboard-title">${getDashboardTitle()}</h1>
+        <div class="welcome-message">
+            <p>${getWelcomeMessage(user)}</p>
+        </div>
+    `;
+    
+    // Add user profile section for regular users
+    if (currentUser.type === 'user') {
+        dashboardHTML += `
+            <div class="profile-section">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h2>${user.name}</h2>
+                        <p>Member since ${user.joinDate}</p>
+                    </div>
+                </div>
+                <div class="profile-details">
+                    <div class="profile-detail-card">
+                        <h3>Contact Information</h3>
+                        <p><i class="fas fa-envelope"></i> ${user.email}</p>
+                        <p><i class="fas fa-phone"></i> ${user.phone}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> ${user.address}</p>
+                    </div>
+                    <div class="profile-detail-card">
+                        <h3>Account Details</h3>
+                        <p><i class="fas fa-user"></i> ${user.username}</p>
+                        <p><i class="fas fa-calendar"></i> Joined: ${user.joinDate}</p>
+                        <p><i class="fas fa-circle" style="color: #1dd1a1;"></i> Status: ${user.status}</p>
+                    </div>
+                    <div class="profile-detail-card">
+                        <h3>Payment Methods</h3>
+                        ${user.paymentMethods.length > 0 ? 
+                            user.paymentMethods.map(method => `
+                                <p><i class="fas fa-${method.type === 'credit' ? 'credit-card' : 'mobile'}"></i> 
+                                ${method.type} ending in ${method.last4}</p>
+                            `).join('') : 
+                            '<p>No payment methods saved</p>'}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    dashboardHTML += `
+        <div class="dashboard-sections">
+            ${getDashboardCards(user)}
+        </div>
+        ${getRecentOrdersSection(user)}
+    `;
+    
+    // Add back to main button for users
+    if (currentUser.type === 'user') {
+        dashboardHTML += `
+            <div class="back-to-dashboard">
+                <a href="#" id="backToMain"><i class="fas fa-arrow-left"></i> Back to Main Site</a>
+            </div>
+        `;
+    }
+    
+    dashboardMain.innerHTML = dashboardHTML;
+    
+    // Add event listeners
+    addDashboardEventListeners();
+    
+    // Update user menu button text
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    if (userMenuBtn) {
+        userMenuBtn.innerHTML = `
+            <i class="fas fa-user-circle"></i> ${user.name || user.restaurant || user.username}
+            <i class="fas fa-caret-down"></i>
+        `;
+    }
+}
+
+function getDashboardTitle() {
+    switch(currentUser.type) {
+        case 'admin': return 'Admin Dashboard';
+        case 'restaurant': return 'Restaurant Dashboard';
+        case 'delivery': return 'Delivery Dashboard';
+        case 'user': return 'My Account';
+        default: return 'Dashboard';
+    }
+}
+
+function getWelcomeMessage(user) {
+    switch(currentUser.type) {
+        case 'admin': 
+            return 'Welcome to the Admin Dashboard. You can manage all aspects of the QuickBite platform from here.';
+        case 'restaurant': 
+            return `Welcome back, ${user.restaurant}! Here you can manage your menu, orders, and restaurant profile.`;
+        case 'delivery': 
+            return `Welcome back, ${user.name}! Here you can view your delivery assignments and update your status.`;
+        case 'user': 
+            return `Welcome back, ${user.name}! Here you can view your orders, update your profile, and more.`;
+        default: 
+            return 'Welcome to your dashboard!';
+    }
+}
+
+function getDashboardCards(user) {
+    let cardsHTML = '';
+    
+    switch(currentUser.type) {
+        case 'admin':
+            cardsHTML = `
+                <div class="dashboard-card" id="manageUsers">
+                    <i class="fas fa-users"></i>
+                    <h3>Manage Users</h3>
+                    <p>View, edit, and manage all user accounts</p>
+                </div>
+                <div class="dashboard-card" id="manageRestaurants">
+                    <i class="fas fa-utensils"></i>
+                    <h3>Manage Restaurants</h3>
+                    <p>Approve, suspend, or remove restaurants</p>
+                </div>
+                <div class="dashboard-card" id="manageDelivery">
+                    <i class="fas fa-motorcycle"></i>
+                    <h3>Manage Delivery</h3>
+                    <p>Manage delivery personnel and assignments</p>
+                </div>
+                <div class="dashboard-card" id="viewOrders">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>View All Orders</h3>
+                    <p>Monitor all orders across the platform</p>
+                </div>
+                <div class="dashboard-card" id="platformStats">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Platform Statistics</h3>
+                    <p>View analytics and performance metrics</p>
+                </div>
+                <div class="dashboard-card" id="managePromotions">
+                    <i class="fas fa-percentage"></i>
+                    <h3>Manage Promotions</h3>
+                    <p>Create and manage promotional offers</p>
+                </div>
+            `;
+            break;
+            
+        case 'restaurant':
+            cardsHTML = `
+                <div class="dashboard-card" id="restaurantOrders">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Orders</h3>
+                    <p>View and manage incoming orders</p>
+                </div>
+                <div class="dashboard-card" id="restaurantMenu">
+                    <i class="fas fa-book-open"></i>
+                    <h3>Menu Management</h3>
+                    <p>Add, edit, or remove menu items</p>
+                </div>
+                <div class="dashboard-card" id="restaurantProfile">
+                    <i class="fas fa-store"></i>
+                    <h3>Restaurant Profile</h3>
+                    <p>Update your restaurant information</p>
+                </div>
+                <div class="dashboard-card" id="restaurantStats">
+                    <i class="fas fa-chart-pie"></i>
+                    <h3>Statistics</h3>
+                    <p>View sales and performance data</p>
+                </div>
+                <div class="dashboard-card" id="restaurantPromotions">
+                    <i class="fas fa-bullhorn"></i>
+                    <h3>Promotions</h3>
+                    <p>Create special offers and discounts</p>
+                </div>
+                <div class="dashboard-card" id="restaurantReviews">
+                    <i class="fas fa-star"></i>
+                    <h3>Customer Reviews</h3>
+                    <p>View and respond to customer feedback</p>
+                </div>
+            `;
+            break;
+            
+        case 'delivery':
+            cardsHTML = `
+                <div class="dashboard-card" id="deliveryAssignments">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Current Assignments</h3>
+                    <p>View your current delivery orders</p>
+                </div>
+                <div class="dashboard-card" id="deliveryHistory">
+                    <i class="fas fa-history"></i>
+                    <h3>Delivery History</h3>
+                    <p>View your past deliveries</p>
+                </div>
+                <div class="dashboard-card" id="deliveryProfile">
+                    <i class="fas fa-user"></i>
+                    <h3>Profile</h3>
+                    <p>Update your personal information</p>
+                </div>
+                <div class="dashboard-card" id="deliveryAvailability">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Availability</h3>
+                    <p>Set your working hours</p>
+                </div>
+                <div class="dashboard-card" id="deliveryEarnings">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h3>Earnings</h3>
+                    <p>View your payments and earnings</p>
+                </div>
+                <div class="dashboard-card" id="deliveryRatings">
+                    <i class="fas fa-star"></i>
+                    <h3>Ratings</h3>
+                    <p>View customer ratings and feedback</p>
+                </div>
+            `;
+            break;
+            
+        case 'user':
+        default:
+            cardsHTML = `
+                <div class="dashboard-card" id="userOrders">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>My Orders</h3>
+                    <p>View your order history</p>
+                </div>
+                <div class="dashboard-card" id="userFavorites">
+                    <i class="fas fa-heart"></i>
+                    <h3>Favorites</h3>
+                    <p>View your favorite restaurants</p>
+                </div>
+                <div class="dashboard-card" id="userProfile">
+                    <i class="fas fa-user"></i>
+                    <h3>Profile</h3>
+                    <p>Update your personal information</p>
+                </div>
+                <div class="dashboard-card" id="userAddresses">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Addresses</h3>
+                    <p>Manage your delivery addresses</p>
+                </div>
+                <div class="dashboard-card" id="userPayments">
+                    <i class="fas fa-credit-card"></i>
+                    <h3>Payment Methods</h3>
+                    <p>Manage your saved payment options</p>
+                </div>
+                <div class="dashboard-card" id="userReviews">
+                    <i class="fas fa-star"></i>
+                    <h3>My Reviews</h3>
+                    <p>View and edit your restaurant reviews</p>
+                </div>
+            `;
+    }
+    
+    return cardsHTML;
+}
+
+function getRecentOrdersSection(user) {
+    let ordersHTML = '<div class="order-list"><h3>Recent Orders</h3>';
+    
+    switch(currentUser.type) {
+        case 'admin':
+            // Admin sees all orders
+            const allOrders = orders.slice(0, 5);
+            if (allOrders.length === 0) {
+                ordersHTML += '<p>No recent orders</p>';
+            } else {
+                ordersHTML += allOrders.map(order => renderOrderCard(order)).join('');
+            }
+            break;
+            
+        case 'restaurant':
+            // Restaurant sees their own orders
+            const restaurantOrders = orders.filter(o => o.restaurantId === user.username).slice(0, 5);
+            if (restaurantOrders.length === 0) {
+                ordersHTML += '<p>No recent orders</p>';
+            } else {
+                ordersHTML += restaurantOrders.map(order => renderOrderCard(order)).join('');
+            }
+            break;
+            
+        case 'delivery':
+            // Delivery person sees their assigned orders
+            const deliveryOrders = orders.filter(o => o.deliveryPerson === user.name && 
+                (o.status === 'in-progress' || o.status === 'pending')).slice(0, 5);
+            if (deliveryOrders.length === 0) {
+                ordersHTML += '<p>No current delivery assignments</p>';
+            } else {
+                ordersHTML += deliveryOrders.map(order => renderOrderCard(order)).join('');
+            }
+            break;
+            
+        case 'user':
+            // User sees their own orders
+            const userOrders = orders.filter(o => o.userId === user.username).slice(0, 5);
+            if (userOrders.length === 0) {
+                ordersHTML += '<p>No recent orders</p>';
+            } else {
+                ordersHTML += userOrders.map(order => renderOrderCard(order)).join('');
+            }
+            break;
+    }
+    
+    ordersHTML += '</div>';
+    return ordersHTML;
+}
+
+function renderOrderCard(order) {
+    let actionsHTML = '';
+    
+    switch(currentUser.type) {
+        case 'admin':
+            actionsHTML = `
+                <button class="btn btn-sm btn-primary">View Details</button>
+                ${order.status === 'pending' ? '<button class="btn btn-sm btn-outline">Assign Delivery</button>' : ''}
+            `;
+            break;
+            
+        case 'restaurant':
+            actionsHTML = `
+                <button class="btn btn-sm btn-primary">View Details</button>
+                ${order.status === 'pending' ? '<button class="btn btn-sm btn-outline">Accept Order</button>' : ''}
+                ${order.status === 'in-progress' ? '<button class="btn btn-sm btn-outline">Mark as Ready</button>' : ''}
+            `;
+            break;
+            
+        case 'delivery':
+            actionsHTML = `
+                <button class="btn btn-sm btn-primary">View Details</button>
+                ${order.status === 'pending' ? '<button class="btn btn-sm btn-outline">Pick Up Order</button>' : ''}
+                ${order.status === 'in-progress' ? '<button class="btn btn-sm btn-outline">Mark as Delivered</button>' : ''}
+            `;
+            break;
+            
+        case 'user':
+            actionsHTML = `
+                <button class="btn btn-sm btn-primary">View Details</button>
+                ${order.status === 'delivered' ? '<button class="btn btn-sm btn-outline">Rate Order</button>' : ''}
+                ${order.status === 'pending' ? '<button class="btn btn-sm btn-danger">Cancel Order</button>' : ''}
+            `;
+            break;
+    }
+    
+    return `
+        <div class="order-card">
+            <div class="order-header">
+                <span class="order-id">Order #${order.id}</span>
+                <span class="order-date">${order.date}</span>
+                <span class="order-status ${order.status}">${order.status.replace('-', ' ')}</span>
+            </div>
+            <div class="order-details">
+                ${currentUser.type !== 'user' ? `<p><strong>Customer:</strong> ${order.userId}</p>` : ''}
+                ${currentUser.type !== 'restaurant' ? `<p><strong>Restaurant:</strong> ${order.restaurantId}</p>` : ''}
+                <p><strong>Items:</strong> ${order.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}</p>
+                <p><strong>Total:</strong> ৳${(order.total * exchangeRate).toFixed(2)}</p>
+            </div>
+            <div class="order-actions">
+                ${actionsHTML}
+            </div>
+        </div>
+    `;
+}
+
+function addDashboardEventListeners() {
+    // Dashboard card click handlers
+    document.querySelectorAll('.dashboard-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const id = this.id;
+            alert(`Navigating to ${id.replace(/([A-Z])/g, ' $1').trim()}`);
+            // In a real app, this would load the appropriate section
+        });
     });
     
-    // User dropdown functionality
+    // User dropdown menu
     const userMenuBtn = document.getElementById('userMenuBtn');
     const userDropdown = document.getElementById('userDropdown');
     
-    userMenuBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      userDropdown.classList.toggle('show');
-    });
+    if (userMenuBtn && userDropdown) {
+        userMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+    }
     
     // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!e.target.matches('#userMenuBtn') && !e.target.matches('#userDropdown *')) {
-        userDropdown.classList.remove('show');
-      }
+    document.addEventListener('click', function() {
+        if (userDropdown) userDropdown.style.display = 'none';
     });
     
-    // Add click handlers for dashboard cards
-    if (currentUser.type === 'user') {
-      document.getElementById('userBrowseRestaurants').addEventListener('click', showRestaurants);
-      document.getElementById('userOrderHistory').addEventListener('click', showOrderHistory);
-      document.getElementById('userTrackOrder').addEventListener('click', showTrackOrder);
-      
-      // User dropdown options
-      document.getElementById('profileBtn').addEventListener('click', showUserProfile);
-      document.getElementById('ordersBtn').addEventListener('click', showOrderHistory);
-      document.getElementById('addressesBtn').addEventListener('click', showUserAddresses);
+    // Profile link
+    const profileBtn = document.getElementById('dashboardProfile');
+    if (profileBtn) {
+        profileBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+                       alert('Loading profile settings...');
+        });
     }
     
-    if (currentUser.type === 'restaurant') {
-      document.getElementById('restaurantMenuManagement').addEventListener('click', showMenuManagement);
-      document.getElementById('restaurantOrders').addEventListener('click', showRestaurantOrders);
-      document.getElementById('restaurantAnalytics').addEventListener('click', showRestaurantAnalytics);
-      
-      // Restaurant dropdown options
-      document.getElementById('menuBtn').addEventListener('click', showMenuManagement);
-      document.getElementById('salesBtn').addEventListener('click', showRestaurantAnalytics);
+    // Settings link
+    const settingsBtn = document.getElementById('dashboardSettings');
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Loading account settings...');
+        });
     }
     
-    if (currentUser.type === 'delivery') {
-      document.getElementById('deliveryAssigned').addEventListener('click', showAssignedDeliveries);
-      document.getElementById('deliveryHistory').addEventListener('click', showDeliveryHistory);
-      document.getElementById('deliveryMap').addEventListener('click', showDeliveryMap);
-      
-      // Delivery dropdown options
-      document.getElementById('deliveriesBtn').addEventListener('click', showAssignedDeliveries);
-      document.getElementById('mapBtn').addEventListener('click', showDeliveryMap);
+    // Logout link
+    const logoutBtn = document.getElementById('dashboardLogout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            logout();
+        });
     }
     
-    if (currentUser.type === 'admin') {
-      document.getElementById('adminUsers').addEventListener('click', showUserManagement);
-      document.getElementById('adminRestaurants').addEventListener('click', showRestaurantManagement);
-      document.getElementById('adminAnalytics').addEventListener('click', showSystemAnalytics);
-      
-      // Admin dropdown options
-      document.getElementById('manageUsersBtn').addEventListener('click', showUserManagement);
-      document.getElementById('manageRestaurantsBtn').addEventListener('click', showRestaurantManagement);
-      document.getElementById('systemAnalyticsBtn').addEventListener('click', showSystemAnalytics);
+    // Back to main site button
+    const backToMainBtn = document.getElementById('backToMain');
+    if (backToMainBtn) {
+        backToMainBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            hideDashboard();
+        });
     }
-  }
+    
+    // Order action buttons
+    document.querySelectorAll('.order-actions button').forEach(button => {
+        button.addEventListener('click', function() {
+            const orderId = this.closest('.order-card').querySelector('.order-id').textContent.replace('Order #', '');
+            const action = this.textContent.trim().toLowerCase();
+            
+            handleOrderAction(orderId, action);
+        });
+    });
+}
 
-  // Dashboard functions
-  function showUserProfile() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">My Profile</h2>
-      <div class="profile-section">
-        <div class="profile-header">
-          <div class="profile-avatar">
-            <i class="fas fa-user-circle"></i>
-          </div>
-          <h3>${currentUser.name}</h3>
-          <p>${currentUser.type.charAt(0).toUpperCase() + currentUser.type.slice(1)}</p>
-        </div>
-        <div class="profile-details">
-          <form id="profileForm">
-            <div class="form-group">
-              <label for="fullName">Full Name</label>
-              <input type="text" id="fullName" value="${currentUser.name}">
-            </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" value="${currentUser.username}@example.com">
-            </div>
-            <div class="form-group">
-              <label for="phone">Phone</label>
-              <input type="tel" id="phone" value="+8801XXXXXXXXX">
-            </div>
-            ${currentUser.type === 'user' ? `
-            <div class="form-group">
-              <label for="address">Delivery Address</label>
-              <input type="text" id="address" value="123 Main Street, Dhaka">
-            </div>
-            ` : ''}
-            ${currentUser.type === 'restaurant' ? `
-            <div class="form-group">
-              <label for="restaurantName">Restaurant Name</label>
-              <input type="text" id="restaurantName" value="${currentUser.restaurant || ''}">
-            </div>
-            <div class="form-group">
-              <label for="cuisineType">Cuisine Type</label>
-              <input type="text" id="cuisineType" value="Italian">
-            </div>
-            ` : ''}
-            ${currentUser.type === 'delivery' ? `
-            <div class="form-group">
-              <label for="vehicleType">Vehicle Type</label>
-              <select id="vehicleType">
-                <option value="bike">Bike</option>
-                <option value="car">Car</option>
-                <option value="scooter">Scooter</option>
-              </select>
-            </div>
-            ` : ''}
-            <button type="submit" class="btn btn-primary">Update Profile</button>
-          </form>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
+function handleOrderAction(orderId, action) {
+    const order = orders.find(o => o.id == orderId);
+    if (!order) return;
     
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-    
-    document.getElementById('profileForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Profile updated successfully!');
-      showDashboard();
-    });
-  }
+    switch(action) {
+        case 'view details':
+            alert(`Showing details for order #${orderId}`);
+            break;
+        case 'accept order':
+            order.status = 'in-progress';
+            showToast(`Order #${orderId} has been accepted`);
+            showDashboard();
+            break;
+        case 'mark as ready':
+            order.status = 'ready-for-pickup';
+            showToast(`Order #${orderId} is ready for pickup`);
+            showDashboard();
+            break;
+        case 'pick up order':
+            order.status = 'in-progress';
+            order.deliveryPerson = currentUser.username;
+            showToast(`You have picked up order #${orderId}`);
+            showDashboard();
+            break;
+        case 'mark as delivered':
+            order.status = 'delivered';
+            showToast(`Order #${orderId} has been delivered`);
+            showDashboard();
+            break;
+        case 'rate order':
+            alert(`Opening rating dialog for order #${orderId}`);
+            break;
+        case 'cancel order':
+            if (confirm('Are you sure you want to cancel this order?')) {
+                order.status = 'canceled';
+                showToast(`Order #${orderId} has been canceled`);
+                showDashboard();
+            }
+            break;
+        default:
+            alert(`Action "${action}" not implemented yet`);
+    }
+}
 
-  function showOrderHistory() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">Order History</h2>
-      <div class="order-history-section">
-        <div class="order-filters">
-          <select id="timeFilter">
-            <option value="all">All Orders</option>
-            <option value="month">This Month</option>
-            <option value="week">This Week</option>
-          </select>
-          <input type="text" id="orderSearch" placeholder="Search orders...">
-        </div>
-        <div class="order-list">
-          <div class="order-card">
-            <div class="order-header">
-              <span class="order-id">Order #1001</span>
-              <span class="order-date">Jan 15, 2023</span>
-              <span class="order-status delivered">Delivered</span>
-            </div>
-            <div class="order-details">
-              <p><strong>Pizza Palace</strong> - 1x Margherita Pizza, 1x Garlic Bread</p>
-              <p>Total: ৳${(24.98 * exchangeRate).toFixed(2)}</p>
-            </div>
-            <div class="order-actions">
-              <button class="btn btn-sm btn-primary">Reorder</button>
-              <button class="btn btn-sm btn-outline">Rate Order</button>
-            </div>
-          </div>
-          <div class="order-card">
-            <div class="order-header">
-              <span class="order-id">Order #1002</span>
-              <span class="order-date">Jan 10, 2023</span>
-              <span class="order-status canceled">Canceled</span>
-            </div>
-            <div class="order-details">
-              <p><strong>Burger Barn</strong> - 2x Classic Burger, 1x Fries</p>
-              <p>Total: ৳${(18.99 * exchangeRate).toFixed(2)}</p>
-            </div>
-            <div class="order-actions">
-              <button class="btn btn-sm btn-primary">Reorder</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
+function hideDashboard() {
+    const dashboardContainer = document.getElementById('dashboardContainer');
+    const mainContent = document.querySelector('main');
+    const mainFooter = document.querySelector('.footer');
     
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
+    // Hide dashboard
+    dashboardContainer.style.display = 'none';
+    
+    // Show main content and footer
+    mainContent.style.display = 'block';
+    mainFooter.style.display = 'block';
+}
 
-  function showUserAddresses() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">My Addresses</h2>
-      <div class="addresses-section">
-        <button class="btn btn-primary" id="addAddressBtn">Add New Address</button>
-        <div class="address-list">
-          <div class="address-card">
-            <h4>Home</h4>
-            <p>123 Main Street, Apt 4B</p>
-            <p>Dhaka 1212, Bangladesh</p>
-            <div class="address-actions">
-              <button class="btn btn-sm btn-outline">Edit</button>
-              <button class="btn btn-sm btn-primary">Set as Default</button>
-            </div>
-          </div>
-          <div class="address-card">
-            <h4>Work</h4>
-            <p>456 Business Road, Floor 8</p>
-            <p>Dhaka 1216, Bangladesh</p>
-            <div class="address-actions">
-              <button class="btn btn-sm btn-outline">Edit</button>
-              <button class="btn btn-sm btn-primary">Set as Default</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
+// Logout function
+function logout() {
+    currentUser = null;
     
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
+    // Show login/register buttons
+    document.getElementById('registerBtn').style.display = 'inline-block';
+    document.getElementById('loginBtn').style.display = 'inline-block';
     
-    document.getElementById('addAddressBtn').addEventListener('click', function() {
-      const addressList = document.querySelector('.address-list');
-      addressList.insertAdjacentHTML('beforeend', `
-        <div class="address-card">
-          <div class="form-group">
-            <label>Address Type:</label>
-            <input type="text" value="New Address" class="edit-input">
-          </div>
-          <div class="form-group">
-            <label>Address Line 1:</label>
-            <input type="text" class="edit-input">
-          </div>
-          <div class="form-group">
-            <label>Address Line 2:</label>
-            <input type="text" class="edit-input">
-          </div>
-          <div class="address-actions">
-            <button class="btn btn-sm btn-primary">Save</button>
-            <button class="btn btn-sm btn-outline">Cancel</button>
-          </div>
-        </div>
-      `);
-    });
-  }
+    // Hide account dropdown and cart button
+    document.getElementById('accountDropdownContainer').style.display = 'none';
+    document.getElementById('cartBtn').style.display = 'none';
+    
+    // Hide dashboard if visible
+    hideDashboard();
+    
+    showToast('Logged out successfully');
+}
 
-  function showRestaurants() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">Browse Restaurants</h2>
-      <div class="restaurants-section">
-        <div class="restaurant-filters">
-          <select id="cuisineFilter">
-            <option value="all">All Cuisines</option>
-            <option value="italian">Italian</option>
-            <option value="american">American</option>
-            <option value="japanese">Japanese</option>
-            <option value="mexican">Mexican</option>
-          </select>
-          <select id="deliveryTimeFilter">
-            <option value="all">Any Delivery Time</option>
-            <option value="fast">Under 30 min</option>
-            <option value="medium">30-45 min</option>
-          </select>
-          <input type="text" id="restaurantSearch" placeholder="Search restaurants...">
-        </div>
-        <div class="restaurant-grid">
-          ${generateRestaurantCards()}
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
+// Search food items
+function searchFoodItems(term) {
+    const results = [];
     
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
+    // Search in all categories
+    for (const category in foodData) {
+        const categoryItems = foodData[category];
+        const matches = categoryItems.filter(item => 
+            item.name.toLowerCase().includes(term) || 
+            item.restaurant.toLowerCase().includes(term) ||
+            item.description.toLowerCase().includes(term)
+        );
+        
+        results.push(...matches);
+    }
+    
+    return results;
+}
 
-  function showMenuManagement() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">Menu Management</h2>
-      <div class="menu-management-section">
-        <button class="btn btn-primary" id="addMenuItemBtn">Add Menu Item</button>
-        <div class="menu-categories">
-          <button class="category-btn active">All Items</button>
-          <button class="category-btn">Pizza</button>
-          <button class="category-btn">Pasta</button>
-          <button class="category-btn">Sides</button>
-          <button class="category-btn">Drinks</button>
-        </div>
-        <div class="menu-list">
-          ${generateMenuItems()}
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
+// Show search results
+function showSearchResults(results, searchTerm) {
+    if (results.length === 0) {
+        alert(`No results found for "${searchTerm}"`);
+        return;
+    }
     
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-    
-    document.getElementById('addMenuItemBtn').addEventListener('click', function() {
-      const menuList = document.querySelector('.menu-list');
-      menuList.insertAdjacentHTML('beforeend', `
-        <div class="menu-item edit-mode">
-          <div class="menu-item-info">
-            <input type="text" value="New Menu Item" class="edit-input">
-            <select class="edit-input">
-              <option>Pizza</option>
-              <option>Pasta</option>
-              <option>Sides</option>
-              <option>Drinks</option>
-            </select>
-            <input type="number" value="0.00" class="edit-input" placeholder="Price in ৳">
-          </div>
-          <div class="menu-item-actions">
-            <button class="btn btn-sm btn-primary">Save</button>
-            <button class="btn btn-sm btn-outline">Cancel</button>
-          </div>
-        </div>
-      `);
-    });
-  }
-
-  function showRestaurantAnalytics() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">Sales Analytics</h2>
-      <div class="analytics-section">
-        <div class="analytics-filters">
-          <select id="timePeriod">
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="year">This Year</option>
-          </select>
-        </div>
-        <div class="analytics-cards">
-          <div class="analytics-card">
-            <h4>Total Orders</h4>
-            <p>124</p>
-            <small>+12% from last week</small>
-          </div>
-          <div class="analytics-card">
-            <h4>Total Revenue</h4>
-            <p>৳${(2456.78 * exchangeRate).toFixed(2)}</p>
-            <small>+8% from last week</small>
-          </div>
-          <div class="analytics-card">
-            <h4>Average Order Value</h4>
-            <p>৳${(19.81 * exchangeRate).toFixed(2)}</p>
-            <small>+3% from last week</small>
-          </div>
-        </div>
-        <div class="chart-placeholder">
-          <p>Sales chart would appear here</p>
-        </div>
-        <div class="popular-items">
-          <h4>Top Selling Items</h4>
-          <ol>
-            <li>Margherita Pizza (45 orders)</li>
-            <li>Pepperoni Pizza (32 orders)</li>
-            <li>Garlic Bread (28 orders)</li>
-          </ol>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
-    
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
-
-  function showRestaurantOrders() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">Current Orders</h2>
-      <div class="orders-section">
-        <div class="order-filters">
-          <select id="orderStatusFilter">
-            <option value="all">All Orders</option>
-            <option value="new">New</option>
-            <option value="preparing">Preparing</option>
-            <option value="ready">Ready for Pickup</option>
-          </select>
-        </div>
-        <div class="order-list">
-          <div class="order-card">
-            <div class="order-header">
-              <span class="order-id">Order #1003</span>
-              <span class="order-date">Today, 12:30 PM</span>
-              <span class="order-status in-progress">Preparing</span>
+    const foodGrid = document.getElementById('foodGrid');
+    foodGrid.innerHTML = results.map(item => `
+        <div class="food-card">
+            <div class="food-img">
+                <img src="${item.image}" alt="${item.name}">
             </div>
-            <div class="order-details">
-              <p>2x Margherita Pizza - ৳${(25.98 * exchangeRate).toFixed(2)}</p>
-              <p>Customer: John Doe - Delivery Address: 123 Main St</p>
+            <div class="food-info">
+                <h3>${item.name}</h3>
+                <p>${item.restaurant}</p>
+                <p class="food-description">${item.description}</p>
+                <div class="food-footer">
+                    <span class="price">৳${(item.price * exchangeRate).toFixed(2)}</span>
+                    <button class="btn btn-sm btn-primary add-to-cart" 
+                            data-id="${item.id}" 
+                            data-name="${item.name}" 
+                            data-price="${item.price}" 
+                            data-restaurant="${item.restaurant}">
+                        Add to Cart
+                    </button>
+                </div>
             </div>
-            <div class="order-actions">
-              <button class="btn btn-sm btn-primary">Mark as Ready</button>
-              <button class="btn btn-sm btn-outline">Contact Customer</button>
-            </div>
-          </div>
         </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
-    
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
-
-  function showAssignedDeliveries() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">Assigned Deliveries</h2>
-      <div class="deliveries-section">
-        <div class="delivery-filters">
-          <select id="deliveryStatusFilter">
-            <option value="all">All Deliveries</option>
-            <option value="assigned">Assigned</option>
-            <option value="picked">Picked Up</option>
-            <option value="delivered">Delivered</option>
-          </select>
-        </div>
-        <div class="order-list">
-          <div class="order-card">
-            <div class="order-header">
-              <span class="order-id">Order #1003</span>
-              <span class="order-date">Today, 12:30 PM</span>
-              <span class="order-status in-progress">Ready for Pickup</span>
-            </div>
-            <div class="order-details">
-              <p>From: Pizza Palace to 123 Main St</p>
-              <p>2x Margherita Pizza - ৳${(25.98 * exchangeRate).toFixed(2)}</p>
-              <p>Customer: John Doe - Phone: 0123456789</p>
-            </div>
-            <div class="order-actions">
-              <button class="btn btn-sm btn-primary">Picked Up</button>
-              <button class="btn btn-sm btn-primary">Delivered</button>
-              <button class="btn btn-sm btn-outline">Navigate</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
-    
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
-
-  function showUserManagement() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">User Management</h2>
-      <div class="user-management-section">
-        <button class="btn btn-primary" id="addUserBtn">Add New User</button>
-        <div class="user-filters">
-          <select id="userTypeFilter">
-            <option value="all">All Users</option>
-            <option value="admin">Admins</option>
-            <option value="restaurant">Restaurants</option>
-            <option value="delivery">Delivery Persons</option>
-            <option value="user">Customers</option>
-          </select>
-          <input type="text" id="userSearch" placeholder="Search users...">
-        </div>
-        <div class="user-list">
-          <div class="user-card">
-            <div class="user-info">
-              <h4>John Doe</h4>
-              <p>Customer</p>
-              <p>Email: john@example.com</p>
-            </div>
-            <div class="user-actions">
-              <button class="btn btn-sm btn-outline">Edit</button>
-              <button class="btn btn-sm btn-primary">Deactivate</button>
-            </div>
-          </div>
-          <div class="user-card">
-            <div class="user-info">
-              <h4>Pizza Palace</h4>
-              <p>Restaurant</p>
-              <p>Cuisine: Italian</p>
-            </div>
-            <div class="user-actions">
-              <button class="btn btn-sm btn-outline">Edit</button>
-              <button class="btn btn-sm btn-primary">Deactivate</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
-    
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
-
-  function showRestaurantManagement() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">Restaurant Management</h2>
-      <div class="restaurant-management-section">
-        <button class="btn btn-primary" id="addRestaurantBtn">Add New Restaurant</button>
-        <div class="restaurant-filters">
-          <select id="restaurantStatusFilter">
-            <option value="all">All Restaurants</option>
-            <option value="active">Active</option>
-            <option value="pending">Pending Approval</option>
-            <option value="suspended">Suspended</option>
-          </select>
-          <input type="text" id="restaurantSearch" placeholder="Search restaurants...">
-        </div>
-        <div class="restaurant-list">
-          <div class="restaurant-card">
-            <div class="restaurant-info">
-              <h4>Pizza Palace</h4>
-              <p>Italian • Active</p>
-              <p>Owner: John Smith</p>
-            </div>
-            <div class="restaurant-actions">
-              <button class="btn btn-sm btn-outline">Edit</button>
-              <button class="btn btn-sm btn-primary">View Menu</button>
-            </div>
-          </div>
-          <div class="restaurant-card">
-            <div class="restaurant-info">
-              <h4>Burger Barn</h4>
-              <p>American • Active</p>
-              <p>Owner: Sarah Johnson</p>
-            </div>
-            <div class="restaurant-actions">
-              <button class="btn btn-sm btn-outline">Edit</button>
-              <button class="btn btn-sm btn-primary">View Menu</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
-    
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
-
-  function showSystemAnalytics() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">System Analytics</h2>
-      <div class="system-analytics-section">
-        <div class="analytics-filters">
-          <select id="analyticsTimePeriod">
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="year">This Year</option>
-          </select>
-        </div>
-        <div class="analytics-cards">
-          <div class="analytics-card">
-            <h4>Total Orders</h4>
-            <p>1,245</p>
-            <small>+12% from last week</small>
-          </div>
-          <div class="analytics-card">
-            <h4>Total Revenue</h4>
-            <p>৳${(24567.89 * exchangeRate).toFixed(2)}</p>
-            <small>+8% from last week</small>
-          </div>
-          <div class="analytics-card">
-            <h4>Active Users</h4>
-            <p>876</p>
-            <small>+5% from last week</small>
-          </div>
-        </div>
-        <div class="chart-placeholder">
-          <p>System analytics charts would appear here</p>
-        </div>
-        <div class="popular-restaurants">
-          <h4>Top Performing Restaurants</h4>
-          <ol>
-            <li>Pizza Palace (342 orders)</li>
-            <li>Burger Barn (289 orders)</li>
-            <li>Sushi World (187 orders)</li>
-          </ol>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
-    
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
-
-  function showTrackOrder() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">Track Your Order</h2>
-      <div class="track-order-section">
-        <div class="order-status-tracker">
-          <div class="status-step completed">
-            <div class="status-icon"><i class="fas fa-check"></i></div>
-            <div class="status-text">Order Placed</div>
-            <div class="status-time">Today, 12:30 PM</div>
-          </div>
-          <div class="status-step completed">
-            <div class="status-icon"><i class="fas fa-check"></i></div>
-            <div class="status-text">Preparing</div>
-            <div class="status-time">Today, 12:35 PM</div>
-          </div>
-          <div class="status-step active">
-            <div class="status-icon"><i class="fas fa-motorcycle"></i></div>
-            <div class="status-text">On the Way</div>
-            <div class="status-time">Estimated: 1:00 PM</div>
-          </div>
-          <div class="status-step">
-            <div class="status-icon"><i class="fas fa-home"></i></div>
-            <div class="status-text">Delivered</div>
-            <div class="status-time"></div>
-          </div>
-        </div>
-        <div class="delivery-map-placeholder">
-          <p>Delivery map with real-time tracking would appear here</p>
-        </div>
-        <div class="delivery-details">
-          <h4>Delivery Details</h4>
-          <p><strong>Order #1002</strong> - Burger Barn</p>
-          <p>2x Classic Burger, 1x Fries</p>
-          <p>Total: ৳${(18.99 * exchangeRate).toFixed(2)}</p>
-          <p>Delivery Person: Raisha Delivery</p>
-          <p>Contact: +8801XXXXXXXX</p>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
-    
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
-
-  function showDeliveryMap() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">Delivery Map</h2>
-      <div class="delivery-map-section">
-        <div class="map-filters">
-          <select id="mapView">
-            <option value="all">All Deliveries</option>
-            <option value="assigned">Assigned</option>
-            <option value="in-progress">In Progress</option>
-          </select>
-        </div>
-        <div class="map-placeholder">
-          <p>Interactive delivery map would appear here</p>
-          <p>Showing delivery locations and routes</p>
-        </div>
-        <div class="delivery-list">
-          <div class="delivery-card">
-            <h4>Order #1003</h4>
-            <p>From: Pizza Palace to 123 Main St</p>
-            <p>Status: On the way</p>
-            <button class="btn btn-sm btn-primary">Navigate</button>
-          </div>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
-    
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
-
-  function showDeliveryHistory() {
-    const dashboardContent = document.getElementById('dashboardContent');
-    dashboardContent.innerHTML = `
-      <h2 class="dashboard-title">Delivery History</h2>
-      <div class="delivery-history-section">
-        <div class="history-filters">
-          <select id="historyTimeFilter">
-            <option value="all">All Time</option>
-            <option value="month">This Month</option>
-            <option value="week">This Week</option>
-            <option value="today">Today</option>
-          </select>
-        </div>
-        <div class="delivery-list">
-          <div class="delivery-card">
-            <div class="delivery-header">
-              <span class="delivery-id">Order #1001</span>
-              <span class="delivery-date">Jan 15, 2023</span>
-              <span class="delivery-status delivered">Delivered</span>
-            </div>
-            <div class="delivery-details">
-              <p>From: Pizza Palace to 123 Main St</p>
-              <p>Earnings: ৳${(50 * exchangeRate).toFixed(2)}</p>
-            </div>
-          </div>
-          <div class="delivery-card">
-            <div class="delivery-header">
-              <span class="delivery-id">Order #1002</span>
-              <span class="delivery-date">Jan 10, 2023</span>
-              <span class="delivery-status delivered">Delivered</span>
-            </div>
-            <div class="delivery-details">
-              <p>From: Burger Barn to 456 Business Rd</p>
-              <p>Earnings: ৳${(45 * exchangeRate).toFixed(2)}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="back-to-dashboard">
-        <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-      </div>
-    `;
-    
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-    });
-  }
-  
-  // Helper function to generate restaurant cards
-  function generateRestaurantCards() {
-    const restaurants = [
-      { name: "Pizza Palace", cuisine: "Italian", deliveryTime: "15-25 min", rating: 4.8 },
-      { name: "Burger Barn", cuisine: "American", deliveryTime: "10-20 min", rating: 4.5 },
-      { name: "Sushi World", cuisine: "Japanese", deliveryTime: "20-30 min", rating: 4.7 },
-      { name: "Taco Fiesta", cuisine: "Mexican", deliveryTime: "15-25 min", rating: 4.9 }
-    ];
-    
-    return restaurants.map(restaurant => `
-      <div class="restaurant-card">
-        <div class="restaurant-img">
-          <img src="https://source.unsplash.com/random/300x200/?${restaurant.cuisine.toLowerCase()}" alt="${restaurant.name}">
-        </div>
-        <div class="restaurant-info">
-          <h3>${restaurant.name}</h3>
-          <div class="rating">
-            <span class="stars">${'★'.repeat(Math.floor(restaurant.rating))}${'☆'.repeat(5 - Math.floor(restaurant.rating))}</span>
-            <span class="review-count">(${(Math.random() * 500 + 50).toFixed(0)})</span>
-          </div>
-          <p>${restaurant.cuisine} • ${restaurant.deliveryTime}</p>
-          <button class="btn btn-sm btn-primary">View Menu</button>
-        </div>
-      </div>
     `).join('');
-  }
-  
-  // Helper function to generate menu items
-  function generateMenuItems() {
-    const items = [
-      { name: "Margherita Pizza", price: 12.99, category: "Pizza" },
-      { name: "Pepperoni Pizza", price: 14.99, category: "Pizza" },
-      { name: "Garlic Bread", price: 4.99, category: "Sides" },
-      { name: "Caesar Salad", price: 8.99, category: "Salads" }
-    ];
     
-    return items.map(item => `
-      <div class="menu-item">
-        <div class="menu-item-info">
-          <h4>${item.name}</h4>
-          <p>${item.category} • ৳${(item.price * exchangeRate).toFixed(2)}</p>
-        </div>
-        <div class="menu-item-actions">
-          <button class="btn btn-sm btn-outline">Edit</button>
-          <button class="btn btn-sm btn-primary">Delete</button>
-        </div>
-      </div>
-    `).join('');
-  }
-});
+    // Update section title
+    document.querySelector('.recommended .section-title').textContent = `Search Results for "${searchTerm}"`;
+    
+    // Scroll to results
+    document.querySelector('.recommended').scrollIntoView({ behavior: 'smooth' });
+    
+    // Add event listeners to add-to-cart buttons
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const name = this.getAttribute('data-name');
+            const price = parseFloat(this.getAttribute('data-price'));
+            const restaurant = this.getAttribute('data-restaurant');
+            
+            addToCart(id, name, price, restaurant);
+        });
+    });
+}

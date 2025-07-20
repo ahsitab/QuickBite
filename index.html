@@ -13,30 +13,35 @@
     <header class="header">
         <div class="container">
             <div class="logo">
-            <img src="logo.png" alt="QuickBite Logo" class="logo-img">
-               <h1>QuickBite</h1>
+                <img src="logo.png" alt="QuickBite Logo" class="logo-img">
+                <h1>QuickBite</h1>
             </div>
-            <nav class="nav">
-                <div class="auth-buttons">
-                    <div class="auth-dropdown">
-                        <button id="registerBtn" class="btn btn-outline">Register</button>
-                        <div id="registerDropdown" class="dropdown-content">
-                            <a href="#" class="dropdown-item">As Restaurant</a>
-                            <a href="#" class="dropdown-item">As User</a>
-                            <a href="#" class="dropdown-item">As Delivery</a>
-                        </div>
-                    </div>
-                    <div class="auth-dropdown">
-                        <button id="loginBtn" class="btn btn-primary">Login</button>
-                        <div id="loginDropdown" class="dropdown-content">
-                            <a href="#" class="dropdown-item">As Admin</a>
-                            <a href="#" class="dropdown-item">As Restaurant</a>
-                            <a href="#" class="dropdown-item">As Delivery</a>
-                            <a href="#" class="dropdown-item">As User</a>
-                        </div>
+            <div class="auth-buttons">
+                <div class="auth-dropdown">
+                    <button id="registerBtn" class="btn btn-outline">Register</button>
+                    <div id="registerDropdown" class="dropdown-content">
+                        <a href="#" class="dropdown-item">As Restaurant</a>
+                        <a href="#" class="dropdown-item">As User</a>
+                        <a href="#" class="dropdown-item">As Delivery</a>
                     </div>
                 </div>
-            </nav>
+                <button id="loginBtn" class="btn btn-primary">Login</button>
+                <button id="cartBtn" class="btn btn-outline" style="display:none;">
+                    <i class="fas fa-shopping-cart"></i> Cart
+                </button>
+                <div class="auth-dropdown" id="accountDropdownContainer" style="display:none;">
+                    <button id="accountBtn" class="btn btn-primary">
+                        <i class="fas fa-user-circle"></i> Account
+                    </button>
+                    <div id="accountDropdown" class="dropdown-content">
+                        <a href="#" id="dashboardBtn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+                <button id="themeToggle" class="btn btn-outline">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -60,7 +65,8 @@
         <section class="banner">
             <div class="container">
                 <div class="promo-banner">
-                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Special Offer">
+                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                        alt="Special Offer">
                     <div class="banner-text">
                         <h3>50% OFF Your First Order</h3>
                         <p>Use code: QUICKBITE50</p>
@@ -187,7 +193,8 @@
                 <div class="restaurant-grid">
                     <div class="restaurant-card">
                         <div class="restaurant-img">
-                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Pizza Palace">
+                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80"
+                                alt="Pizza Palace">
                         </div>
                         <div class="restaurant-info">
                             <h3>Pizza Palace</h3>
@@ -200,7 +207,8 @@
                     </div>
                     <div class="restaurant-card">
                         <div class="restaurant-img">
-                            <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1398&q=80" alt="Burger Barn">
+                            <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1398&q=80"
+                                alt="Burger Barn">
                         </div>
                         <div class="restaurant-info">
                             <h3>Burger Barn</h3>
@@ -213,7 +221,8 @@
                     </div>
                     <div class="restaurant-card">
                         <div class="restaurant-img">
-                            <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1392&q=80" alt="Sushi World">
+                            <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1392&q=80"
+                                alt="Sushi World">
                         </div>
                         <div class="restaurant-info">
                             <h3>Sushi World</h3>
@@ -226,7 +235,8 @@
                     </div>
                     <div class="restaurant-card">
                         <div class="restaurant-img">
-                            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" alt="Taco Fiesta">
+                            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80"
+                                alt="Taco Fiesta">
                         </div>
                         <div class="restaurant-info">
                             <h3>Taco Fiesta</h3>
@@ -245,59 +255,8 @@
         <section class="recommended">
             <div class="container">
                 <h2 class="section-title">Recommended For You</h2>
-                <div class="food-grid">
-                    <div class="food-card">
-                        <div class="food-img">
-                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1381&q=80" alt="Margherita Pizza">
-                        </div>
-                        <div class="food-info">
-                            <h3>Margherita Pizza</h3>
-                            <p>Pizza Palace</p>
-                            <div class="food-footer">
-                                <span class="price">৳1,526.33</span>
-                                <button class="btn btn-sm btn-primary">Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="food-card">
-                        <div class="food-img">
-                            <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1398&q=80" alt="Classic Burger">
-                        </div>
-                        <div class="food-info">
-                            <h3>Classic Burger</h3>
-                            <p>Burger Barn</p>
-                            <div class="food-footer">
-                                <span class="price">৳1,056.83</span>
-                                <button class="btn btn-sm btn-primary">Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="food-card">
-                        <div class="food-img">
-                            <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="California Roll">
-                        </div>
-                        <div class="food-info">
-                            <h3>California Roll</h3>
-                            <p>Sushi World</p>
-                            <div class="food-footer">
-                                <span class="price">৳1,761.83</span>
-                                <button class="btn btn-sm btn-primary">Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="food-card">
-                        <div class="food-img">
-                            <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Chicken Tacos">
-                        </div>
-                        <div class="food-info">
-                            <h3>Chicken Tacos</h3>
-                            <p>Taco Fiesta</p>
-                            <div class="food-footer">
-                                <span class="price">৳1,291.33</span>
-                                <button class="btn btn-sm btn-primary">Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="food-grid" id="foodGrid">
+                    <!-- Food items will be loaded here -->
                 </div>
             </div>
         </section>
@@ -347,17 +306,93 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 QuickBite. All rights reserved.</p>
+                <p>&copy; 2025 QuickBite. All rights reserved.<br/>Developed By Asfar Hossain Sitab</p>
             </div>
         </div>
     </footer>
+
+    <!-- Dashboard Container (hidden by default) -->
+    <div id="dashboardContainer" style="display:none;">
+        <div class="dashboard-header">
+            <div class="container">
+                <nav class="dashboard-nav">
+                    <a href="#" id="dashboardHome"><i class="fas fa-home"></i> Dashboard</a>
+                    <div class="dashboard-user">
+                        <div class="user-dropdown">
+                            <button id="userMenuBtn">
+                                <i class="fas fa-user-circle"></i> Account
+                                <i class="fas fa-caret-down"></i>
+                            </button>
+                            <div id="userDropdown" class="dropdown-content">
+                                <a href="#" id="dashboardProfile"><i class="fas fa-user"></i> Profile</a>
+                                <a href="#" id="dashboardSettings"><i class="fas fa-cog"></i> Settings</a>
+                                <a href="#" id="dashboardLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div class="dashboard-main">
+            <div class="container">
+                <!-- Dashboard content will be loaded here -->
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h3>QuickBite</h3>
+                        <p>Delivering happiness to your doorstep since 2023.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer-col">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Restaurants</a></li>
+                            <li><a href="#">Offers</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h3>Help & Support</h3>
+                        <ul>
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Refund Policy</a></li>
+                            <li><a href="#">Shipping Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h3>Contact Us</h3>
+                        <ul>
+                            <li><i class="fas fa-map-marker-alt"></i> 123 Food Street, Foodville</li>
+                            <li><i class="fas fa-phone"></i> +1 234 567 890</li>
+                            <li><i class="fas fa-envelope"></i> support@quickbite.com</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 QuickBite. All rights reserved.<br/>Developed By Asfar Hossain Sitab</p>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <!-- Register Modal -->
     <div id="registerModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Register</h2>
-            <div id="registerForms">
+            <div id="registerForms" class="modal-scrollable">
                 <!-- Forms will be inserted here by JavaScript -->
             </div>
         </div>
@@ -392,9 +427,22 @@
         </div>
     </div>
 
-    <!-- Dashboard Container (hidden by default) -->
-    <div id="dashboardContainer" style="display:none;">
-        <!-- Dashboard content will be loaded here -->
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Your Cart</h2>
+            <div id="cartItems">
+                <!-- Cart items will be loaded here -->
+            </div>
+            <div class="cart-total">
+                <h3>Total: <span id="cartTotal">৳0.00</span></h3>
+            </div>
+            <div class="cart-actions">
+                <button id="checkoutBtn" class="btn btn-primary">Proceed to Checkout</button>
+                <button id="clearCartBtn" class="btn btn-outline">Clear Cart</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
