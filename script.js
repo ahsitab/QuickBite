@@ -1,3 +1,15 @@
+// Order Status Constants
+const ORDER_STATUS = {
+    PENDING: 'pending',
+    ACCEPTED: 'accepted',
+    PREPARING: 'preparing',
+    READY: 'ready',
+    PICKED_UP: 'picked-up',
+    ON_THE_WAY: 'on-the-way',
+    DELIVERED: 'delivered',
+    CANCELLED: 'cancelled'
+};
+
 // Predefined users
 const users = {
   admin: [
@@ -156,9 +168,10 @@ let orders = [
       { id: 3, name: "Garlic Bread", price: 4.99, quantity: 1, restaurant: "Pizza Palace" }
     ],
     total: 17.98,
-    status: "delivered",
+    status: ORDER_STATUS.DELIVERED,
     date: "2023-01-15",
-    deliveryPerson: "Raisha Delivery"
+    deliveryPerson: "Raisha Delivery",
+    timestamp: new Date("2023-01-15").getTime()
   },
   {
     id: 1002,
@@ -169,11 +182,123 @@ let orders = [
       { id: 2, name: "Fries", price: 3.99, quantity: 1, restaurant: "Burger Barn" }
     ],
     total: 21.97,
-    status: "in-progress",
+    status: ORDER_STATUS.ON_THE_WAY,
     date: "2023-01-10",
-    deliveryPerson: "Raisha Delivery"
+    deliveryPerson: "Raisha Delivery",
+    timestamp: new Date("2023-01-10").getTime()
   }
 ];
+
+// Add this function to simulate real-time updates
+function setupRealTimeUpdates() {
+    // Check for order updates every 3 seconds
+    setInterval(() => {
+        if (currentUser) {
+            updateOrderDisplays();
+            checkForNewOrders();
+        }
+    }, 3000);
+    
+    // Initialize real-time updates when the page loads
+    updateOrderDisplays();
+}
+
+// Add this function to update order displays
+function updateOrderDisplays() {
+    if (document.getElementById('dashboardContainer').style.display === 'block') {
+        showDashboard();
+    }
+    
+    if (document.getElementById('cartModal').style.display === 'block') {
+        showCartModal();
+    }
+}
+
+// Add this function to check for new orders
+function checkForNewOrders() {
+    const user = getUserData();
+    if (!user) return;
+
+    let newOrders = [];
+    
+    if (currentUser.type === 'restaurant') {
+        newOrders = orders.filter(o => 
+            o.restaurantId === user.username && 
+            o.status === ORDER_STATUS.PENDING
+        );
+    } else if (currentUser.type === 'delivery') {
+        newOrders = orders.filter(o => 
+            o.deliveryPerson === user.name && 
+            (o.status === ORDER_STATUS.READY || o.status === ORDER_STATUS.ON_THE_WAY)
+        );
+    } else if (currentUser.type === 'user') {
+        newOrders = orders.filter(o => 
+            o.userId === user.username && 
+            o.status !== ORDER_STATUS.DELIVERED && 
+            o.status !== ORDER_STATUS.CANCELLED
+        );
+    }
+
+    if (newOrders.length > 0) {
+        showToast(`You have ${newOrders.length} new order update(s)`);
+    }
+}
+
+// Add this function to show real-time order status
+function showRealTimeOrderStatus(order) {
+    const statusContainer = document.getElementById('realTimeOrderStatus');
+    const updatesContainer = document.getElementById('orderStatusUpdates');
+    
+    if (!statusContainer || !updatesContainer) return;
+    
+    statusContainer.style.display = 'block';
+    updatesContainer.innerHTML = `
+        <div class="order-status-card">
+            <h4>Order #${order.id}</h4>
+            <p>Status: <span class="status-badge ${order.status}">${order.status.replace('-', ' ')}</span></p>
+            <div class="status-timeline">
+                <div class="timeline-step ${order.status === ORDER_STATUS.PENDING ? 'active' : ''}">
+                    <div class="timeline-dot"></div>
+                    <p>Order Placed</p>
+                </div>
+                <div class="timeline-step ${order.status === ORDER_STATUS.ACCEPTED || order.status === ORDER_STATUS.PREPARING ? 'active' : ''}">
+                    <div class="timeline-dot"></div>
+                    <p>Restaurant Preparing</p>
+                </div>
+                <div class="timeline-step ${order.status === ORDER_STATUS.READY ? 'active' : ''}">
+                    <div class="timeline-dot"></div>
+                    <p>Ready for Pickup</p>
+                </div>
+                <div class="timeline-step ${order.status === ORDER_STATUS.ON_THE_WAY ? 'active' : ''}">
+                    <div class="timeline-dot"></div>
+                    <p>On the Way</p>
+                </div>
+                <div class="timeline-step ${order.status === ORDER_STATUS.DELIVERED ? 'active' : ''}">
+                    <div class="timeline-dot"></div>
+                    <p>Delivered</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Add this function to update order status
+function updateOrderStatus(order) {
+    // In a real app, this would update the backend
+    // For our demo, we'll just update the local orders array
+    const index = orders.findIndex(o => o.id === order.id);
+    if (index !== -1) {
+        orders[index] = order;
+    }
+    
+    // Update the display
+    updateOrderDisplays();
+    
+    // Show real-time update
+    if (currentUser && currentUser.type === 'user') {
+        showRealTimeOrderStatus(order);
+    }
+}
 
 // Food data by category
 const foodData = {
@@ -426,6 +551,9 @@ document.addEventListener('DOMContentLoaded', function() {
       if (accountDropdown) accountDropdown.style.display = 'none';
     }
   });
+  
+  // Initialize real-time updates
+  setupRealTimeUpdates();
 });
 
 function updateThemeIcon(theme) {
@@ -671,9 +799,10 @@ function checkout(user) {
         restaurantId: user.cart[0].restaurant,
         items: [...user.cart],
         total: user.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-        status: "pending",
+        status: ORDER_STATUS.PENDING,
         date: new Date().toISOString().split('T')[0],
-        deliveryPerson: ""
+        deliveryPerson: "",
+        timestamp: Date.now()
     };
     
     // Add order to user's order history
@@ -698,6 +827,9 @@ function checkout(user) {
     updateCartCount();
     
     showToast(`Order #${newOrder.id} placed successfully! Total: ৳${(newOrder.total * exchangeRate).toFixed(2)}`);
+    
+    // Show real-time order status
+    showRealTimeOrderStatus(newOrder);
     
     // If user is on dashboard, refresh orders
     if (document.getElementById('dashboardContainer').style.display === 'block') {
@@ -1462,7 +1594,7 @@ function getRecentOrdersSection(user) {
         case 'delivery':
             // Delivery person sees their assigned orders
             const deliveryOrders = orders.filter(o => o.deliveryPerson === user.name && 
-                (o.status === 'in-progress' || o.status === 'pending')).slice(0, 5);
+                (o.status === ORDER_STATUS.ON_THE_WAY || o.status === ORDER_STATUS.PENDING)).slice(0, 5);
             if (deliveryOrders.length === 0) {
                 ordersHTML += '<p>No current delivery assignments</p>';
             } else {
@@ -1492,31 +1624,33 @@ function renderOrderCard(order) {
         case 'admin':
             actionsHTML = `
                 <button class="btn btn-sm btn-primary">View Details</button>
-                ${order.status === 'pending' ? '<button class="btn btn-sm btn-outline">Assign Delivery</button>' : ''}
+                ${order.status === ORDER_STATUS.PENDING ? '<button class="btn btn-sm btn-outline" data-action="assign delivery">Assign Delivery</button>' : ''}
             `;
             break;
             
         case 'restaurant':
             actionsHTML = `
                 <button class="btn btn-sm btn-primary">View Details</button>
-                ${order.status === 'pending' ? '<button class="btn btn-sm btn-outline">Accept Order</button>' : ''}
-                ${order.status === 'in-progress' ? '<button class="btn btn-sm btn-outline">Mark as Ready</button>' : ''}
+                ${order.status === ORDER_STATUS.PENDING ? '<button class="btn btn-sm btn-outline" data-action="accept order">Accept Order</button>' : ''}
+                ${order.status === ORDER_STATUS.ACCEPTED ? '<button class="btn btn-sm btn-outline" data-action="start preparing">Start Preparing</button>' : ''}
+                ${order.status === ORDER_STATUS.PREPARING ? '<button class="btn btn-sm btn-outline" data-action="mark as ready">Mark as Ready</button>' : ''}
             `;
             break;
             
         case 'delivery':
             actionsHTML = `
                 <button class="btn btn-sm btn-primary">View Details</button>
-                ${order.status === 'pending' ? '<button class="btn btn-sm btn-outline">Pick Up Order</button>' : ''}
-                ${order.status === 'in-progress' ? '<button class="btn btn-sm btn-outline">Mark as Delivered</button>' : ''}
+                ${order.status === ORDER_STATUS.READY ? '<button class="btn btn-sm btn-outline" data-action="pick up order">Pick Up Order</button>' : ''}
+                ${order.status === ORDER_STATUS.ON_THE_WAY ? '<button class="btn btn-sm btn-outline" data-action="mark as delivered">Mark as Delivered</button>' : ''}
             `;
             break;
             
         case 'user':
             actionsHTML = `
                 <button class="btn btn-sm btn-primary">View Details</button>
-                ${order.status === 'delivered' ? '<button class="btn btn-sm btn-outline">Rate Order</button>' : ''}
-                ${order.status === 'pending' ? '<button class="btn btn-sm btn-danger">Cancel Order</button>' : ''}
+                ${order.status === ORDER_STATUS.DELIVERED ? '<button class="btn btn-sm btn-outline" data-action="rate order">Rate Order</button>' : ''}
+                ${[ORDER_STATUS.PENDING, ORDER_STATUS.ACCEPTED, ORDER_STATUS.PREPARING].includes(order.status) ? 
+                  '<button class="btn btn-sm btn-danger" data-action="cancel order">Cancel Order</button>' : ''}
             `;
             break;
     }
@@ -1623,35 +1757,43 @@ function handleOrderAction(orderId, action) {
             alert(`Showing details for order #${orderId}`);
             break;
         case 'accept order':
-            order.status = 'in-progress';
+            order.status = ORDER_STATUS.ACCEPTED;
             showToast(`Order #${orderId} has been accepted`);
-            showDashboard();
+            updateOrderStatus(order);
+            break;
+        case 'start preparing':
+            order.status = ORDER_STATUS.PREPARING;
+            showToast(`Order #${orderId} is now being prepared`);
+            updateOrderStatus(order);
             break;
         case 'mark as ready':
-            order.status = 'ready-for-pickup';
+            order.status = ORDER_STATUS.READY;
             showToast(`Order #${orderId} is ready for pickup`);
-            showDashboard();
+            updateOrderStatus(order);
             break;
         case 'pick up order':
-            order.status = 'in-progress';
+            order.status = ORDER_STATUS.ON_THE_WAY;
             order.deliveryPerson = currentUser.username;
             showToast(`You have picked up order #${orderId}`);
-            showDashboard();
+            updateOrderStatus(order);
             break;
         case 'mark as delivered':
-            order.status = 'delivered';
+            order.status = ORDER_STATUS.DELIVERED;
             showToast(`Order #${orderId} has been delivered`);
-            showDashboard();
+            updateOrderStatus(order);
             break;
         case 'rate order':
             alert(`Opening rating dialog for order #${orderId}`);
             break;
         case 'cancel order':
             if (confirm('Are you sure you want to cancel this order?')) {
-                order.status = 'canceled';
+                order.status = ORDER_STATUS.CANCELLED;
                 showToast(`Order #${orderId} has been canceled`);
-                showDashboard();
+                updateOrderStatus(order);
             }
+            break;
+        case 'assign delivery':
+            assignDeliveryPartner(order);
             break;
         default:
             alert(`Action "${action}" not implemented yet`);
@@ -1708,6 +1850,168 @@ function searchFoodItems(term) {
     return results;
 }
 
+// Assign delivery partner function
+function assignDeliveryPartner(order) {
+    // Get available delivery partners
+    const availableDelivery = users.delivery.filter(d => 
+        d.status === 'active' && 
+        d.username !== 'admin' // Exclude admin account
+    );
+    
+    if (availableDelivery.length === 0) {
+        alert('No available delivery partners');
+        return;
+    }
+    
+    // Create modal for delivery selection
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'block';
+    modal.style.position = 'fixed';
+    modal.style.zIndex = '1000';
+    modal.style.left = '0';
+    modal.style.top = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+    modalContent.style.backgroundColor = 'var(--white-color)';
+    modalContent.style.margin = '10% auto';
+    modalContent.style.padding = '20px';
+    modalContent.style.width = '80%';
+    modalContent.style.maxWidth = '500px';
+    modalContent.style.borderRadius = '8px';
+    
+    // Add close button
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'close';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.style.float = 'right';
+    closeBtn.style.fontSize = '28px';
+    closeBtn.style.fontWeight = 'bold';
+    closeBtn.style.cursor = 'pointer';
+    
+    // Add title
+    const title = document.createElement('h3');
+    title.textContent = `Assign Delivery for Order #${order.id}`;
+    
+    // Create delivery list
+    const deliveryList = document.createElement('div');
+    deliveryList.style.maxHeight = '300px';
+    deliveryList.style.overflowY = 'auto';
+    deliveryList.style.margin = '20px 0';
+    
+    availableDelivery.forEach(delivery => {
+        const deliveryItem = document.createElement('div');
+        deliveryItem.className = 'delivery-item';
+        deliveryItem.style.padding = '10px';
+        deliveryItem.style.borderBottom = '1px solid var(--light-color)';
+        deliveryItem.style.cursor = 'pointer';
+        deliveryItem.style.display = 'flex';
+        deliveryItem.style.justifyContent = 'space-between';
+        deliveryItem.style.alignItems = 'center';
+        
+        deliveryItem.innerHTML = `
+            <div>
+                <strong>${delivery.name}</strong>
+                <div style="font-size: 0.8em; color: var(--gray-color)">
+                    ${delivery.vehicleType} • ${delivery.availability}
+                </div>
+            </div>
+            <div>
+                <span class="badge">${delivery.deliveries.length} deliveries</span>
+            </div>
+        `;
+        
+        deliveryItem.addEventListener('click', () => {
+            order.deliveryPerson = delivery.name;
+            order.status = ORDER_STATUS.ACCEPTED;
+            delivery.deliveries.push({
+                orderId: order.id,
+                restaurant: order.restaurantId,
+                date: new Date().toISOString().split('T')[0],
+                status: 'assigned'
+            });
+            
+            showToast(`Assigned ${delivery.name} to Order #${order.id}`);
+            updateOrderStatus(order);
+            modal.style.display = 'none';
+            document.body.removeChild(modal);
+            
+            // If we're viewing as the assigned delivery partner, navigate to assignments
+            if (currentUser && currentUser.username === delivery.username) {
+                navigateToDeliveryAssignments();
+            }
+        });
+        
+        deliveryList.appendChild(deliveryItem);
+    });
+    
+    // Add cancel button
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'btn btn-outline';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.style.marginTop = '20px';
+    cancelBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        document.body.removeChild(modal);
+    });
+    
+    // Assemble modal
+    modalContent.appendChild(closeBtn);
+    modalContent.appendChild(title);
+    modalContent.appendChild(deliveryList);
+    modalContent.appendChild(cancelBtn);
+    modal.appendChild(modalContent);
+    
+    // Add to DOM
+    document.body.appendChild(modal);
+    
+    // Close modal when clicking X or outside
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        document.body.removeChild(modal);
+    });
+    
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+// Navigate to delivery assignments function
+function navigateToDeliveryAssignments() {
+    // Show dashboard if not already visible
+    if (document.getElementById('dashboardContainer').style.display !== 'block') {
+        showDashboard();
+    }
+    
+    // Simulate clicking the Delivery Assignments card
+    const assignmentsCard = document.getElementById('deliveryAssignments');
+    if (assignmentsCard) {
+        // Add temporary highlight effect
+        assignmentsCard.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
+        assignmentsCard.style.border = '2px solid var(--primary-color)';
+        
+        // Scroll to the card
+        assignmentsCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Remove highlight after 3 seconds
+        setTimeout(() => {
+            assignmentsCard.style.backgroundColor = '';
+            assignmentsCard.style.border = '';
+        }, 3000);
+        
+        // Show the assignments section (in a real app, this would load the content)
+        alert('Showing delivery assignments for the newly assigned order');
+    }
+}
+
 // Show search results
 function showSearchResults(results, searchTerm) {
     if (results.length === 0) {
@@ -1757,1311 +2061,3 @@ function showSearchResults(results, searchTerm) {
         });
     });
 }
-
-// Add this code to your existing script.js file, preferably at the end
-
-// Dashboard form management functions
-function showAdminForm() {
-    const dashboardMain = document.querySelector('.dashboard-main .container');
-    dashboardMain.innerHTML = `
-        <div class="dashboard-form">
-            <h2 class="dashboard-title">Admin Management</h2>
-            
-            <div class="form-tabs">
-                <button class="tab-btn active" data-tab="userManagement">User Management</button>
-                <button class="tab-btn" data-tab="restaurantManagement">Restaurant Management</button>
-                <button class="tab-btn" data-tab="deliveryManagement">Delivery Management</button>
-                <button class="tab-btn" data-tab="promotionManagement">Promotions</button>
-            </div>
-            
-            <div class="tab-content active" id="userManagement">
-                <div class="form-section">
-                    <h3>User Accounts</h3>
-                    <div class="search-filter">
-                        <input type="text" id="userSearch" placeholder="Search users...">
-                        <button class="btn btn-sm btn-primary">Search</button>
-                    </div>
-                    <div class="user-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${users.user.map(user => `
-                                    <tr>
-                                        <td>${user.username}</td>
-                                        <td>${user.name}</td>
-                                        <td>${user.email}</td>
-                                        <td><span class="status-badge ${user.status}">${user.status}</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline edit-user" data-username="${user.username}">Edit</button>
-                                            <button class="btn btn-sm btn-danger delete-user" data-username="${user.username}">Delete</button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="restaurantManagement">
-                <div class="form-section">
-                    <h3>Restaurant Accounts</h3>
-                    <div class="search-filter">
-                        <input type="text" id="restaurantSearch" placeholder="Search restaurants...">
-                        <button class="btn btn-sm btn-primary">Search</button>
-                    </div>
-                    <div class="restaurant-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Restaurant</th>
-                                    <th>Owner</th>
-                                    <th>Cuisine</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${users.restaurant.map(restaurant => `
-                                    <tr>
-                                        <td>${restaurant.restaurant}</td>
-                                        <td>${restaurant.name}</td>
-                                        <td>${restaurant.cuisine}</td>
-                                        <td><span class="status-badge ${restaurant.status}">${restaurant.status}</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline edit-restaurant" data-username="${restaurant.username}">Edit</button>
-                                            <button class="btn btn-sm btn-danger delete-restaurant" data-username="${restaurant.username}">Delete</button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="deliveryManagement">
-                <div class="form-section">
-                    <h3>Delivery Personnel</h3>
-                    <div class="search-filter">
-                        <input type="text" id="deliverySearch" placeholder="Search delivery personnel...">
-                        <button class="btn btn-sm btn-primary">Search</button>
-                    </div>
-                    <div class="delivery-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Vehicle</th>
-                                    <th>Status</th>
-                                    <th>Availability</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${users.delivery.map(delivery => `
-                                    <tr>
-                                        <td>${delivery.name}</td>
-                                        <td>${delivery.vehicleType}</td>
-                                        <td><span class="status-badge ${delivery.status}">${delivery.status}</span></td>
-                                        <td>${delivery.availability}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline edit-delivery" data-username="${delivery.username}">Edit</button>
-                                            <button class="btn btn-sm btn-danger delete-delivery" data-username="${delivery.username}">Delete</button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="promotionManagement">
-                <div class="form-section">
-                    <h3>Promotions & Offers</h3>
-                    <button class="btn btn-primary" id="addPromotionBtn">Add New Promotion</button>
-                    <div class="promotions-list">
-                        <div class="promotion-card">
-                            <h4>50% OFF First Order</h4>
-                            <p>Code: QUICKBITE50</p>
-                            <p>Valid until: 2023-12-31</p>
-                            <div class="promotion-actions">
-                                <button class="btn btn-sm btn-outline">Edit</button>
-                                <button class="btn btn-sm btn-danger">Delete</button>
-                            </div>
-                        </div>
-                        <div class="promotion-card">
-                            <h4>Free Delivery Weekend</h4>
-                            <p>Code: FREEDEL</p>
-                            <p>Valid on weekends</p>
-                            <div class="promotion-actions">
-                                <button class="btn btn-sm btn-outline">Edit</button>
-                                <button class="btn btn-sm btn-danger">Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="back-to-dashboard">
-                <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-            </div>
-        </div>
-    `;
-    
-    // Add event listeners for tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Remove active class from all tabs and contents
-            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            // Add active class to clicked tab and corresponding content
-            this.classList.add('active');
-            const tabId = this.getAttribute('data-tab');
-            document.getElementById(tabId).classList.add('active');
-        });
-    });
-    
-    // Add event listeners for back button
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-        e.preventDefault();
-        showDashboard();
-    });
-    
-    // Add event listeners for edit/delete buttons
-    addAdminFormEventListeners();
-}
-
-function showRestaurantForm() {
-    const user = getUserData();
-    if (!user) return;
-    
-    const dashboardMain = document.querySelector('.dashboard-main .container');
-    dashboardMain.innerHTML = `
-        <div class="dashboard-form">
-            <h2 class="dashboard-title">Restaurant Management</h2>
-            
-            <div class="form-tabs">
-                <button class="tab-btn active" data-tab="restaurantInfo">Restaurant Info</button>
-                <button class="tab-btn" data-tab="menuManagement">Menu Management</button>
-                <button class="tab-btn" data-tab="restaurantOrders">Orders</button>
-                <button class="tab-btn" data-tab="restaurantPromotions">Promotions</button>
-            </div>
-            
-            <div class="tab-content active" id="restaurantInfo">
-                <form id="restaurantInfoForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="restaurantName">Restaurant Name</label>
-                            <input type="text" id="restaurantName" value="${user.restaurant || ''}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="restaurantCuisine">Cuisine Type</label>
-                            <input type="text" id="restaurantCuisine" value="${user.cuisine || ''}" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="restaurantOwner">Owner Name</label>
-                            <input type="text" id="restaurantOwner" value="${user.name || ''}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="restaurantEmail">Email</label>
-                            <input type="email" id="restaurantEmail" value="${user.email || ''}" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="restaurantPhone">Phone</label>
-                            <input type="tel" id="restaurantPhone" value="${user.phone || ''}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="restaurantHours">Opening Hours</label>
-                            <input type="text" id="restaurantHours" value="${user.openingHours || ''}" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="restaurantAddress">Address</label>
-                        <textarea id="restaurantAddress" rows="3" required>${user.address || ''}</textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="restaurantRadius">Delivery Radius (km)</label>
-                        <input type="number" id="restaurantRadius" value="${user.deliveryRadius || ''}" min="1" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="restaurantDescription">Description</label>
-                        <textarea id="restaurantDescription" rows="3">${user.description || ''}</textarea>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                        <button type="button" class="btn btn-outline" id="cancelRestaurantChanges">Cancel</button>
-                    </div>
-                </form>
-            </div>
-            
-            <div class="tab-content" id="menuManagement">
-                <div class="menu-management">
-                    <div class="menu-header">
-                        <h3>Menu Items</h3>
-                        <button class="btn btn-primary" id="addMenuItemBtn">Add New Item</button>
-                    </div>
-                    
-                    <div class="menu-items">
-                        ${user.menu.length > 0 ? 
-                            user.menu.map(item => `
-                                <div class="menu-item-card" data-id="${item.id}">
-                                    <div class="menu-item-img">
-                                        <img src="${item.image}" alt="${item.name}">
-                                    </div>
-                                    <div class="menu-item-info">
-                                        <h4>${item.name}</h4>
-                                        <p class="menu-item-price">৳${(item.price * exchangeRate).toFixed(2)}</p>
-                                        <p class="menu-item-desc">${item.description}</p>
-                                    </div>
-                                    <div class="menu-item-actions">
-                                        <button class="btn btn-sm btn-outline edit-menu-item">Edit</button>
-                                        <button class="btn btn-sm btn-danger delete-menu-item">Delete</button>
-                                    </div>
-                                </div>
-                            `).join('') : 
-                            '<p>No menu items added yet</p>'}
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="restaurantOrders">
-                <div class="orders-management">
-                    <div class="orders-header">
-                        <h3>Recent Orders</h3>
-                        <div class="orders-filter">
-                            <select id="ordersFilter">
-                                <option value="all">All Orders</option>
-                                <option value="pending">Pending</option>
-                                <option value="in-progress">In Progress</option>
-                                <option value="ready">Ready</option>
-                                <option value="delivered">Delivered</option>
-                                <option value="canceled">Canceled</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="orders-list">
-                        ${orders.filter(o => o.restaurantId === user.username).length > 0 ? 
-                            orders.filter(o => o.restaurantId === user.username)
-                                .map(order => renderOrderCard(order)).join('') : 
-                            '<p>No orders yet</p>'}
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="restaurantPromotions">
-                <div class="promotions-management">
-                    <div class="promotions-header">
-                        <h3>Current Promotions</h3>
-                        <button class="btn btn-primary" id="addPromotionBtn">Add New Promotion</button>
-                    </div>
-                    
-                    <div class="promotions-list">
-                        ${user.promotions && user.promotions.length > 0 ? 
-                            user.promotions.map(promo => `
-                                <div class="promotion-card">
-                                    <h4>${promo.name}</h4>
-                                    <p>${promo.description}</p>
-                                    <p>Discount: ${promo.discount}%</p>
-                                    <p>Valid until: ${promo.validUntil}</p>
-                                    <div class="promotion-actions">
-                                        <button class="btn btn-sm btn-outline edit-promotion">Edit</button>
-                                        <button class="btn btn-sm btn-danger delete-promotion">Delete</button>
-                                    </div>
-                                </div>
-                            `).join('') : 
-                            '<p>No promotions added yet</p>'}
-                    </div>
-                </div>
-            </div>
-            
-            <div class="back-to-dashboard">
-                <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-            </div>
-        </div>
-    `;
-    
-    // Add event listeners for tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Remove active class from all tabs and contents
-            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            // Add active class to clicked tab and corresponding content
-            this.classList.add('active');
-            const tabId = this.getAttribute('data-tab');
-            document.getElementById(tabId).classList.add('active');
-        });
-    });
-    
-    // Add event listeners for back button
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-        e.preventDefault();
-        showDashboard();
-    });
-    
-    // Add event listeners for form submission
-    document.getElementById('restaurantInfoForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveRestaurantInfo();
-    });
-    
-    // Add event listeners for menu management
-    document.getElementById('addMenuItemBtn').addEventListener('click', showMenuItemForm);
-    document.querySelectorAll('.edit-menu-item').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const itemId = this.closest('.menu-item-card').getAttribute('data-id');
-            showMenuItemForm(itemId);
-        });
-    });
-    
-    document.querySelectorAll('.delete-menu-item').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const itemId = this.closest('.menu-item-card').getAttribute('data-id');
-            deleteMenuItem(itemId);
-        });
-    });
-    
-    // Add event listener for orders filter
-    document.getElementById('ordersFilter').addEventListener('change', function() {
-        filterRestaurantOrders(this.value);
-    });
-}
-
-function showDeliveryForm() {
-    const user = getUserData();
-    if (!user) return;
-    
-    const dashboardMain = document.querySelector('.dashboard-main .container');
-    dashboardMain.innerHTML = `
-        <div class="dashboard-form">
-            <h2 class="dashboard-title">Delivery Dashboard</h2>
-            
-            <div class="form-tabs">
-                <button class="tab-btn active" data-tab="deliveryProfile">Profile</button>
-                <button class="tab-btn" data-tab="deliveryAssignments">Current Assignments</button>
-                <button class="tab-btn" data-tab="deliveryHistory">Delivery History</button>
-                <button class="tab-btn" data-tab="deliveryAvailability">Availability</button>
-            </div>
-            
-            <div class="tab-content active" id="deliveryProfile">
-                <form id="deliveryProfileForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="deliveryName">Full Name</label>
-                            <input type="text" id="deliveryName" value="${user.name || ''}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="deliveryEmail">Email</label>
-                            <input type="email" id="deliveryEmail" value="${user.email || ''}" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="deliveryPhone">Phone</label>
-                            <input type="tel" id="deliveryPhone" value="${user.phone || ''}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="deliveryVehicle">Vehicle Type</label>
-                            <select id="deliveryVehicle" required>
-                                <option value="bike" ${user.vehicleType === 'bike' ? 'selected' : ''}>Bike</option>
-                                <option value="car" ${user.vehicleType === 'car' ? 'selected' : ''}>Car</option>
-                                <option value="scooter" ${user.vehicleType === 'scooter' ? 'selected' : ''}>Scooter</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="deliveryLicense">License Number</label>
-                        <input type="text" id="deliveryLicense" value="${user.licenseNumber || ''}" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="deliveryAddress">Address</label>
-                        <textarea id="deliveryAddress" rows="3" required>${user.address || ''}</textarea>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                        <button type="button" class="btn btn-outline" id="cancelDeliveryChanges">Cancel</button>
-                    </div>
-                </form>
-            </div>
-            
-            <div class="tab-content" id="deliveryAssignments">
-                <div class="assignments-list">
-                    <h3>Current Delivery Assignments</h3>
-                    ${orders.filter(o => o.deliveryPerson === user.name && o.status === 'in-progress').length > 0 ? 
-                        orders.filter(o => o.deliveryPerson === user.name && o.status === 'in-progress')
-                            .map(order => renderDeliveryOrderCard(order)).join('') : 
-                        '<p>No current delivery assignments</p>'}
-                </div>
-            </div>
-            
-            <div class="tab-content" id="deliveryHistory">
-                <div class="history-list">
-                    <h3>Delivery History</h3>
-                    <div class="history-filter">
-                        <select id="historyFilter">
-                            <option value="all">All Deliveries</option>
-                            <option value="today">Today</option>
-                            <option value="week">This Week</option>
-                            <option value="month">This Month</option>
-                        </select>
-                    </div>
-                    
-                    ${orders.filter(o => o.deliveryPerson === user.name && o.status === 'delivered').length > 0 ? 
-                        orders.filter(o => o.deliveryPerson === user.name && o.status === 'delivered')
-                            .map(order => renderDeliveryOrderCard(order)).join('') : 
-                        '<p>No delivery history yet</p>'}
-                </div>
-            </div>
-            
-            <div class="tab-content" id="deliveryAvailability">
-                <form id="availabilityForm">
-                    <div class="form-group">
-                        <label>Availability Status</label>
-                        <div class="radio-group">
-                            <label>
-                                <input type="radio" name="availability" value="available" ${user.availability === 'available' ? 'checked' : ''}>
-                                Available
-                            </label>
-                            <label>
-                                <input type="radio" name="availability" value="unavailable" ${user.availability === 'unavailable' ? 'checked' : ''}>
-                                Unavailable
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="workingHours">Working Hours</label>
-                        <div class="working-hours">
-                            <div class="day-hours">
-                                <label>Monday</label>
-                                <input type="time" id="mondayStart" value="09:00">
-                                <span>to</span>
-                                <input type="time" id="mondayEnd" value="17:00">
-                            </div>
-                            <div class="day-hours">
-                                <label>Tuesday</label>
-                                <input type="time" id="tuesdayStart" value="09:00">
-                                <span>to</span>
-                                <input type="time" id="tuesdayEnd" value="17:00">
-                            </div>
-                            <div class="day-hours">
-                                <label>Wednesday</label>
-                                <input type="time" id="wednesdayStart" value="09:00">
-                                <span>to</span>
-                                <input type="time" id="wednesdayEnd" value="17:00">
-                            </div>
-                            <div class="day-hours">
-                                <label>Thursday</label>
-                                <input type="time" id="thursdayStart" value="09:00">
-                                <span>to</span>
-                                <input type="time" id="thursdayEnd" value="17:00">
-                            </div>
-                            <div class="day-hours">
-                                <label>Friday</label>
-                                <input type="time" id="fridayStart" value="09:00">
-                                <span>to</span>
-                                <input type="time" id="fridayEnd" value="17:00">
-                            </div>
-                            <div class="day-hours">
-                                <label>Saturday</label>
-                                <input type="time" id="saturdayStart" value="10:00">
-                                <span>to</span>
-                                <input type="time" id="saturdayEnd" value="15:00">
-                            </div>
-                            <div class="day-hours">
-                                <label>Sunday</label>
-                                <input type="time" id="sundayStart" value="10:00">
-                                <span>to</span>
-                                <input type="time" id="sundayEnd" value="15:00">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                        <button type="button" class="btn btn-outline" id="cancelAvailabilityChanges">Cancel</button>
-                    </div>
-                </form>
-            </div>
-            
-            <div class="back-to-dashboard">
-                <a href="#" id="backToDashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-            </div>
-        </div>
-    `;
-    
-    // Add event listeners for tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Remove active class from all tabs and contents
-            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            // Add active class to clicked tab and corresponding content
-            this.classList.add('active');
-            const tabId = this.getAttribute('data-tab');
-            document.getElementById(tabId).classList.add('active');
-        });
-    });
-    
-    // Add event listeners for back button
-    document.getElementById('backToDashboard').addEventListener('click', function(e) {
-        e.preventDefault();
-        showDashboard();
-    });
-    
-    // Add event listeners for form submission
-    document.getElementById('deliveryProfileForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveDeliveryProfile();
-    });
-    
-    document.getElementById('availabilityForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveAvailability();
-    });
-    
-    // Add event listener for history filter
-    document.getElementById('historyFilter').addEventListener('change', function() {
-        filterDeliveryHistory(this.value);
-    });
-}
-
-// Helper functions for forms
-function renderDeliveryOrderCard(order) {
-    return `
-        <div class="delivery-order-card">
-            <div class="order-header">
-                <span class="order-id">Order #${order.id}</span>
-                <span class="order-date">${order.date}</span>
-                <span class="order-status ${order.status}">${order.status.replace('-', ' ')}</span>
-            </div>
-            <div class="order-details">
-                <p><strong>Restaurant:</strong> ${order.restaurantId}</p>
-                <p><strong>Customer:</strong> ${order.userId}</p>
-                <p><strong>Items:</strong> ${order.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}</p>
-                <p><strong>Total:</strong> ৳${(order.total * exchangeRate).toFixed(2)}</p>
-                <p><strong>Address:</strong> ${users.user.find(u => u.username === order.userId)?.address || 'N/A'}</p>
-            </div>
-            <div class="order-actions">
-                ${order.status === 'in-progress' ? 
-                    '<button class="btn btn-sm btn-primary mark-delivered">Mark as Delivered</button>' : 
-                    ''}
-                <button class="btn btn-sm btn-outline view-details">View Details</button>
-            </div>
-        </div>
-    `;
-}
-
-function saveRestaurantInfo() {
-    const user = getUserData();
-    if (!user || currentUser.type !== 'restaurant') return;
-    
-    // Update user data
-    user.restaurant = document.getElementById('restaurantName').value;
-    user.cuisine = document.getElementById('restaurantCuisine').value;
-    user.name = document.getElementById('restaurantOwner').value;
-    user.email = document.getElementById('restaurantEmail').value;
-    user.phone = document.getElementById('restaurantPhone').value;
-    user.openingHours = document.getElementById('restaurantHours').value;
-    user.address = document.getElementById('restaurantAddress').value;
-    user.deliveryRadius = document.getElementById('restaurantRadius').value;
-    user.description = document.getElementById('restaurantDescription').value;
-    
-    showToast('Restaurant information updated successfully!');
-    showRestaurantForm(); // Refresh the form
-}
-
-function showMenuItemForm(itemId = null) {
-    const user = getUserData();
-    if (!user || currentUser.type !== 'restaurant') return;
-    
-    let item = null;
-    if (itemId) {
-        item = user.menu.find(i => i.id == itemId);
-    }
-    
-    const dashboardMain = document.querySelector('.dashboard-main .container');
-    dashboardMain.innerHTML = `
-        <div class="menu-item-form">
-            <h2 class="dashboard-title">${item ? 'Edit Menu Item' : 'Add New Menu Item'}</h2>
-            
-            <form id="menuItemForm">
-                <div class="form-group">
-                    <label for="itemName">Item Name</label>
-                    <input type="text" id="itemName" value="${item ? item.name : ''}" required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="itemPrice">Price (USD)</label>
-                        <input type="number" id="itemPrice" min="0.01" step="0.01" value="${item ? item.price : ''}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="itemCategory">Category</label>
-                        <input type="text" id="itemCategory" value="${item ? item.category : ''}" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="itemDescription">Description</label>
-                    <textarea id="itemDescription" rows="3" required>${item ? item.description : ''}</textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="itemImage">Image URL</label>
-                    <input type="text" id="itemImage" value="${item ? item.image : ''}" required>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">${item ? 'Update Item' : 'Add Item'}</button>
-                    <button type="button" class="btn btn-outline" id="cancelMenuItem">Cancel</button>
-                </div>
-            </form>
-        </div>
-    `;
-    
-    // Add event listeners
-    document.getElementById('menuItemForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveMenuItem(itemId);
-    });
-    
-    document.getElementById('cancelMenuItem').addEventListener('click', function() {
-        showRestaurantForm();
-    });
-}
-
-function saveMenuItem(itemId) {
-    const user = getUserData();
-    if (!user || currentUser.type !== 'restaurant') return;
-    
-    const newItem = {
-        id: itemId || Date.now(), // Use existing ID or create new one
-        name: document.getElementById('itemName').value,
-        price: parseFloat(document.getElementById('itemPrice').value),
-        category: document.getElementById('itemCategory').value,
-        description: document.getElementById('itemDescription').value,
-        image: document.getElementById('itemImage').value
-    };
-    
-    if (itemId) {
-        // Update existing item
-        const index = user.menu.findIndex(i => i.id == itemId);
-        if (index !== -1) {
-            user.menu[index] = newItem;
-        }
-    } else {
-        // Add new item
-        user.menu.push(newItem);
-    }
-    
-    showToast(`Menu item ${itemId ? 'updated' : 'added'} successfully!`);
-    showRestaurantForm(); // Return to menu management
-}
-
-function deleteMenuItem(itemId) {
-    if (!confirm('Are you sure you want to delete this menu item?')) return;
-    
-    const user = getUserData();
-    if (!user || currentUser.type !== 'restaurant') return;
-    
-    user.menu = user.menu.filter(item => item.id != itemId);
-    showToast('Menu item deleted successfully!');
-    showRestaurantForm(); // Refresh the menu
-}
-
-function filterRestaurantOrders(filter) {
-    const user = getUserData();
-    if (!user || currentUser.type !== 'restaurant') return;
-    
-    let filteredOrders = orders.filter(o => o.restaurantId === user.username);
-    
-    if (filter !== 'all') {
-        filteredOrders = filteredOrders.filter(o => o.status === filter);
-    }
-    
-    document.querySelector('.orders-list').innerHTML = filteredOrders.length > 0 ? 
-        filteredOrders.map(order => renderOrderCard(order)).join('') : 
-        '<p>No orders match the selected filter</p>';
-    
-    // Reattach event listeners to order action buttons
-    document.querySelectorAll('.order-actions button').forEach(button => {
-        button.addEventListener('click', function() {
-            const orderId = this.closest('.order-card').querySelector('.order-id').textContent.replace('Order #', '');
-            const action = this.textContent.trim().toLowerCase();
-            handleOrderAction(orderId, action);
-        });
-    });
-}
-
-function saveDeliveryProfile() {
-    const user = getUserData();
-    if (!user || currentUser.type !== 'delivery') return;
-    
-    // Update user data
-    user.name = document.getElementById('deliveryName').value;
-    user.email = document.getElementById('deliveryEmail').value;
-    user.phone = document.getElementById('deliveryPhone').value;
-    user.vehicleType = document.getElementById('deliveryVehicle').value;
-    user.licenseNumber = document.getElementById('deliveryLicense').value;
-    user.address = document.getElementById('deliveryAddress').value;
-    
-    showToast('Delivery profile updated successfully!');
-    showDeliveryForm(); // Refresh the form
-}
-
-function saveAvailability() {
-    const user = getUserData();
-    if (!user || currentUser.type !== 'delivery') return;
-    
-    // Update user availability
-    user.availability = document.querySelector('input[name="availability"]:checked').value;
-    // In a real app, you would save the working hours too
-    
-    showToast('Availability settings updated successfully!');
-    showDeliveryForm(); // Refresh the form
-}
-
-function filterDeliveryHistory(filter) {
-    const user = getUserData();
-    if (!user || currentUser.type !== 'delivery') return;
-    
-    let filteredOrders = orders.filter(o => o.deliveryPerson === user.name && o.status === 'delivered');
-    
-    // In a real app, you would implement date filtering based on the filter value
-    
-    document.querySelector('.history-list').innerHTML = `
-        <h3>Delivery History</h3>
-        <div class="history-filter">
-            <select id="historyFilter">
-                <option value="all">All Deliveries</option>
-                <option value="today">Today</option>
-                <option value="week">This Week</option>
-                <option value="month">This Month</option>
-            </select>
-        </div>
-        
-        ${filteredOrders.length > 0 ? 
-            filteredOrders.map(order => renderDeliveryOrderCard(order)).join('') : 
-            '<p>No delivery history matches the selected filter</p>'}
-    `;
-    
-    // Reattach event listener for filter
-    document.getElementById('historyFilter').addEventListener('change', function() {
-        filterDeliveryHistory(this.value);
-    });
-    
-    // Reattach event listeners to order action buttons
-    document.querySelectorAll('.mark-delivered').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const orderId = this.closest('.delivery-order-card').querySelector('.order-id').textContent.replace('Order #', '');
-            const order = orders.find(o => o.id == orderId);
-            if (order) {
-                order.status = 'delivered';
-                showToast(`Order #${orderId} marked as delivered!`);
-                showDeliveryForm(); // Refresh the view
-            }
-        });
-    });
-}
-
-function addAdminFormEventListeners() {
-    // Edit user buttons
-    document.querySelectorAll('.edit-user').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const username = this.getAttribute('data-username');
-            editUser(username);
-        });
-    });
-    
-    // Delete user buttons
-    document.querySelectorAll('.delete-user').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const username = this.getAttribute('data-username');
-            deleteUser(username);
-        });
-    });
-    
-    // Edit restaurant buttons
-    document.querySelectorAll('.edit-restaurant').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const username = this.getAttribute('data-username');
-            editRestaurant(username);
-        });
-    });
-    
-    // Delete restaurant buttons
-    document.querySelectorAll('.delete-restaurant').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const username = this.getAttribute('data-username');
-            deleteRestaurant(username);
-        });
-    });
-    
-    // Edit delivery buttons
-    document.querySelectorAll('.edit-delivery').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const username = this.getAttribute('data-username');
-            editDelivery(username);
-        });
-    });
-    
-    // Delete delivery buttons
-    document.querySelectorAll('.delete-delivery').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const username = this.getAttribute('data-username');
-            deleteDelivery(username);
-        });
-    });
-}
-
-function editUser(username) {
-    const user = users.user.find(u => u.username === username);
-    if (!user) return;
-    
-    const dashboardMain = document.querySelector('.dashboard-main .container');
-    dashboardMain.innerHTML = `
-        <div class="user-edit-form">
-            <h2 class="dashboard-title">Edit User: ${user.username}</h2>
-            
-            <form id="editUserForm">
-                <div class="form-group">
-                    <label for="editUserName">Full Name</label>
-                    <input type="text" id="editUserName" value="${user.name}" required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editUserEmail">Email</label>
-                        <input type="email" id="editUserEmail" value="${user.email}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editUserPhone">Phone</label>
-                        <input type="tel" id="editUserPhone" value="${user.phone}" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="editUserAddress">Address</label>
-                    <textarea id="editUserAddress" rows="3" required>${user.address}</textarea>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editUserStatus">Status</label>
-                        <select id="editUserStatus" required>
-                            <option value="active" ${user.status === 'active' ? 'selected' : ''}>Active</option>
-                            <option value="suspended" ${user.status === 'suspended' ? 'selected' : ''}>Suspended</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="editUserPassword">Reset Password</label>
-                        <input type="password" id="editUserPassword" placeholder="Leave blank to keep current">
-                    </div>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <button type="button" class="btn btn-outline" id="cancelEditUser">Cancel</button>
-                </div>
-            </form>
-        </div>
-    `;
-    
-    // Add event listeners
-    document.getElementById('editUserForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveUserChanges(username);
-    });
-    
-    document.getElementById('cancelEditUser').addEventListener('click', function() {
-        showAdminForm();
-    });
-}
-
-function saveUserChanges(username) {
-    const user = users.user.find(u => u.username === username);
-    if (!user) return;
-    
-    // Update user data
-    user.name = document.getElementById('editUserName').value;
-    user.email = document.getElementById('editUserEmail').value;
-    user.phone = document.getElementById('editUserPhone').value;
-    user.address = document.getElementById('editUserAddress').value;
-    user.status = document.getElementById('editUserStatus').value;
-    
-    const newPassword = document.getElementById('editUserPassword').value;
-    if (newPassword) {
-        user.password = newPassword;
-    }
-    
-    showToast('User changes saved successfully!');
-    showAdminForm(); // Return to user management
-}
-
-function deleteUser(username) {
-    if (!confirm(`Are you sure you want to delete user ${username}? This action cannot be undone.`)) return;
-    
-    users.user = users.user.filter(u => u.username !== username);
-    showToast('User deleted successfully!');
-    showAdminForm(); // Refresh the user list
-}
-
-function editRestaurant(username) {
-    const restaurant = users.restaurant.find(r => r.username === username);
-    if (!restaurant) return;
-    
-    const dashboardMain = document.querySelector('.dashboard-main .container');
-    dashboardMain.innerHTML = `
-        <div class="restaurant-edit-form">
-            <h2 class="dashboard-title">Edit Restaurant: ${restaurant.restaurant}</h2>
-            
-            <form id="editRestaurantForm">
-                <div class="form-group">
-                    <label for="editRestaurantName">Restaurant Name</label>
-                    <input type="text" id="editRestaurantName" value="${restaurant.restaurant}" required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editRestaurantOwner">Owner Name</label>
-                        <input type="text" id="editRestaurantOwner" value="${restaurant.name}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editRestaurantCuisine">Cuisine</label>
-                        <input type="text" id="editRestaurantCuisine" value="${restaurant.cuisine}" required>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editRestaurantEmail">Email</label>
-                        <input type="email" id="editRestaurantEmail" value="${restaurant.email}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editRestaurantPhone">Phone</label>
-                        <input type="tel" id="editRestaurantPhone" value="${restaurant.phone}" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="editRestaurantAddress">Address</label>
-                    <textarea id="editRestaurantAddress" rows="3" required>${restaurant.address}</textarea>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editRestaurantStatus">Status</label>
-                        <select id="editRestaurantStatus" required>
-                            <option value="active" ${restaurant.status === 'active' ? 'selected' : ''}>Active</option>
-                            <option value="pending" ${restaurant.status === 'pending' ? 'selected' : ''}>Pending</option>
-                            <option value="suspended" ${restaurant.status === 'suspended' ? 'selected' : ''}>Suspended</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="editRestaurantPassword">Reset Password</label>
-                        <input type="password" id="editRestaurantPassword" placeholder="Leave blank to keep current">
-                    </div>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <button type="button" class="btn btn-outline" id="cancelEditRestaurant">Cancel</button>
-                </div>
-            </form>
-        </div>
-    `;
-    
-    // Add event listeners
-    document.getElementById('editRestaurantForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveRestaurantChanges(username);
-    });
-    
-    document.getElementById('cancelEditRestaurant').addEventListener('click', function() {
-        showAdminForm();
-    });
-}
-
-function saveRestaurantChanges(username) {
-    const restaurant = users.restaurant.find(r => r.username === username);
-    if (!restaurant) return;
-    
-    // Update restaurant data
-    restaurant.restaurant = document.getElementById('editRestaurantName').value;
-    restaurant.name = document.getElementById('editRestaurantOwner').value;
-    restaurant.cuisine = document.getElementById('editRestaurantCuisine').value;
-    restaurant.email = document.getElementById('editRestaurantEmail').value;
-    restaurant.phone = document.getElementById('editRestaurantPhone').value;
-    restaurant.address = document.getElementById('editRestaurantAddress').value;
-    restaurant.status = document.getElementById('editRestaurantStatus').value;
-    
-    const newPassword = document.getElementById('editRestaurantPassword').value;
-    if (newPassword) {
-        restaurant.password = newPassword;
-    }
-    
-    showToast('Restaurant changes saved successfully!');
-    showAdminForm(); // Return to restaurant management
-}
-
-function deleteRestaurant(username) {
-    if (!confirm(`Are you sure you want to delete this restaurant? This action cannot be undone.`)) return;
-    
-    users.restaurant = users.restaurant.filter(r => r.username !== username);
-    showToast('Restaurant deleted successfully!');
-    showAdminForm(); // Refresh the restaurant list
-}
-
-function editDelivery(username) {
-    const delivery = users.delivery.find(d => d.username === username);
-    if (!delivery) return;
-    
-    const dashboardMain = document.querySelector('.dashboard-main .container');
-    dashboardMain.innerHTML = `
-        <div class="delivery-edit-form">
-            <h2 class="dashboard-title">Edit Delivery: ${delivery.name}</h2>
-            
-            <form id="editDeliveryForm">
-                <div class="form-group">
-                    <label for="editDeliveryName">Full Name</label>
-                    <input type="text" id="editDeliveryName" value="${delivery.name}" required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editDeliveryEmail">Email</label>
-                        <input type="email" id="editDeliveryEmail" value="${delivery.email}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editDeliveryPhone">Phone</label>
-                        <input type="tel" id="editDeliveryPhone" value="${delivery.phone}" required>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editDeliveryVehicle">Vehicle Type</label>
-                        <select id="editDeliveryVehicle" required>
-                            <option value="bike" ${delivery.vehicleType === 'bike' ? 'selected' : ''}>Bike</option>
-                            <option value="car" ${delivery.vehicleType === 'car' ? 'selected' : ''}>Car</option>
-                            <option value="scooter" ${delivery.vehicleType === 'scooter' ? 'selected' : ''}>Scooter</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="editDeliveryLicense">License Number</label>
-                        <input type="text" id="editDeliveryLicense" value="${delivery.licenseNumber}" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="editDeliveryAddress">Address</label>
-                    <textarea id="editDeliveryAddress" rows="3" required>${delivery.address}</textarea>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editDeliveryStatus">Status</label>
-                        <select id="editDeliveryStatus" required>
-                            <option value="active" ${delivery.status === 'active' ? 'selected' : ''}>Active</option>
-                            <option value="inactive" ${delivery.status === 'inactive' ? 'selected' : ''}>Inactive</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="editDeliveryPassword">Reset Password</label>
-                        <input type="password" id="editDeliveryPassword" placeholder="Leave blank to keep current">
-                    </div>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <button type="button" class="btn btn-outline" id="cancelEditDelivery">Cancel</button>
-                </div>
-            </form>
-        </div>
-    `;
-    
-    // Add event listeners
-    document.getElementById('editDeliveryForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        saveDeliveryChanges(username);
-    });
-    
-    document.getElementById('cancelEditDelivery').addEventListener('click', function() {
-        showAdminForm();
-    });
-}
-
-function saveDeliveryChanges(username) {
-    const delivery = users.delivery.find(d => d.username === username);
-    if (!delivery) return;
-    
-    // Update delivery data
-    delivery.name = document.getElementById('editDeliveryName').value;
-    delivery.email = document.getElementById('editDeliveryEmail').value;
-    delivery.phone = document.getElementById('editDeliveryPhone').value;
-    delivery.vehicleType = document.getElementById('editDeliveryVehicle').value;
-    delivery.licenseNumber = document.getElementById('editDeliveryLicense').value;
-    delivery.address = document.getElementById('editDeliveryAddress').value;
-    delivery.status = document.getElementById('editDeliveryStatus').value;
-    
-    const newPassword = document.getElementById('editDeliveryPassword').value;
-    if (newPassword) {
-        delivery.password = newPassword;
-    }
-    
-    showToast('Delivery changes saved successfully!');
-    showAdminForm(); // Return to delivery management
-}
-
-function deleteDelivery(username) {
-    if (!confirm(`Are you sure you want to delete this delivery person? This action cannot be undone.`)) return;
-    
-    users.delivery = users.delivery.filter(d => d.username !== username);
-    showToast('Delivery person deleted successfully!');
-    showAdminForm(); // Refresh the delivery list
-}
-
-// Update the showDashboard function to include these forms
-function showDashboard() {
-    const dashboardContainer = document.getElementById('dashboardContainer');
-    const mainContent = document.querySelector('main');
-    const mainFooter = document.querySelector('.footer');
-    
-    // Hide main content and footer
-    mainContent.style.display = 'none';
-    mainFooter.style.display = 'none';
-    
-    // Show dashboard
-    dashboardContainer.style.display = 'block';
-    
-    // Get user data
-    const user = getUserData();
-    if (!user) return;
-    
-    // Get dashboard container elements
-    const dashboardMain = dashboardContainer.querySelector('.dashboard-main .container');
-    
-    // Clear previous content
-    dashboardMain.innerHTML = '';
-    
-    // Create dashboard content
-    let dashboardHTML = `
-        <h1 class="dashboard-title">${getDashboardTitle()}</h1>
-        <div class="welcome-message">
-            <p>${getWelcomeMessage(user)}</p>
-        </div>
-    `;
-    
-    // Add user profile section for regular users
-    if (currentUser.type === 'user') {
-        dashboardHTML += `
-            <div class="profile-section">
-                <div class="profile-header">
-                    <div class="profile-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="profile-info">
-                        <h2>${user.name}</h2>
-                        <p>Member since ${user.joinDate}</p>
-                    </div>
-                </div>
-                <div class="profile-details">
-                    <div class="profile-detail-card">
-                        <h3>Contact Information</h3>
-                        <p><i class="fas fa-envelope"></i> ${user.email}</p>
-                        <p><i class="fas fa-phone"></i> ${user.phone}</p>
-                        <p><i class="fas fa-map-marker-alt"></i> ${user.address}</p>
-                    </div>
-                    <div class="profile-detail-card">
-                        <h3>Account Details</h3>
-                        <p><i class="fas fa-user"></i> ${user.username}</p>
-                        <p><i class="fas fa-calendar"></i> Joined: ${user.joinDate}</p>
-                        <p><i class="fas fa-circle" style="color: #1dd1a1;"></i> Status: ${user.status}</p>
-                    </div>
-                    <div class="profile-detail-card">
-                        <h3>Payment Methods</h3>
-                        ${user.paymentMethods.length > 0 ? 
-                            user.paymentMethods.map(method => `
-                                <p><i class="fas fa-${method.type === 'credit' ? 'credit-card' : 'mobile'}"></i> 
-                                ${method.type} ending in ${method.last4}</p>
-                            `).join('') : 
-                            '<p>No payment methods saved</p>'}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    dashboardHTML += `
-        <div class="dashboard-sections">
-            ${getDashboardCards(user)}
-        </div>
-        ${getRecentOrdersSection(user)}
-    `;
-    
-    // Add back to main button for users
-    if (currentUser.type === 'user') {
-        dashboardHTML += `
-            <div class="back-to-dashboard">
-                <a href="#" id="backToMain"><i class="fas fa-arrow-left"></i> Back to Main Site</a>
-            </div>
-        `;
-    }
-    
-    dashboardMain.innerHTML = dashboardHTML;
-    
-    // Add event listeners
-    addDashboardEventListeners();
-    
-    // Update user menu button text
-    const userMenuBtn = document.getElementById('userMenuBtn');
-    if (userMenuBtn) {
-        userMenuBtn.innerHTML = `
-            <i class="fas fa-user-circle"></i> ${user.name || user.restaurant || user.username}
-            <i class="fas fa-caret-down"></i>
-        `;
-    }
-    
-    // Add click handlers for dashboard cards based on user type
-    if (currentUser.type === 'admin') {
-        document.getElementById('manageUsers').addEventListener('click', showAdminForm);
-        document.getElementById('manageRestaurants').addEventListener('click', showAdminForm);
-        document.getElementById('manageDelivery').addEventListener('click', showAdminForm);
-    } else if (currentUser.type === 'restaurant') {
-        document.getElementById('restaurantMenu').addEventListener('click', showRestaurantForm);
-        document.getElementById('restaurantProfile').addEventListener('click', showRestaurantForm);
-    } else if (currentUser.type === 'delivery') {
-        document.getElementById('deliveryProfile').addEventListener('click', showDeliveryForm);
-        document.getElementById('deliveryAvailability').addEventListener('click', showDeliveryForm);
-    }
-}
-

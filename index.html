@@ -336,6 +336,12 @@
         <div class="dashboard-main">
             <div class="container">
                 <!-- Dashboard content will be loaded here -->
+                
+                <!-- Add this inside the dashboard-main container in index.html -->
+                <div id="realTimeOrderStatus" style="display: none;">
+                    <h3>Live Order Updates</h3>
+                    <div id="orderStatusUpdates"></div>
+                </div>
             </div>
         </div>
         <footer class="footer">
@@ -446,5 +452,6 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>
