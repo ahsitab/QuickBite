@@ -191,10 +191,21 @@ let orders = [
 
 // Add this function to simulate real-time updates
 function setupRealTimeUpdates() {
-    // Check for order updates every 3 seconds
+    // Only check for updates if we're on the dashboard or cart
     setInterval(() => {
         if (currentUser) {
-            updateOrderDisplays();
+            // Only update if dashboard is visible
+            if (document.getElementById('dashboardContainer').style.display === 'block') {
+                // Only refresh if we're not in the middle of an admin action
+                const isAdminView = currentUser.type === 'admin' && 
+                    document.querySelector('.dashboard-form') !== null;
+                
+                if (!isAdminView) {
+                    updateOrderDisplays();
+                }
+            }
+            
+            // Always check for new orders (shows toast notifications)
             checkForNewOrders();
         }
     }, 3000);
@@ -203,10 +214,808 @@ function setupRealTimeUpdates() {
     updateOrderDisplays();
 }
 
+// Add this function to handle admin dashboard button clicks
+function handleAdminDashboardActions(action) {
+  const dashboardMain = document.querySelector('.dashboard-main .container');
+  
+  switch(action) {
+    case 'manageUsers':
+      dashboardMain.innerHTML = `
+        <h1 class="dashboard-title">Manage Users</h1>
+        <div class="dashboard-form">
+          <div class="search-filter">
+            <input type="text" placeholder="Search users..." id="userSearch">
+            <button class="btn btn-primary" id="searchUsersBtn">Search</button>
+          </div>
+          <div class="user-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                ${renderAllUsers()}
+              </tbody>
+            </table>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="addNewUserBtn">Add New User</button>
+            <button class="btn btn-outline" id="backToDashboardBtn">Back to Dashboard</button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('backToDashboardBtn').addEventListener('click', showDashboard);
+      document.getElementById('addNewUserBtn').addEventListener('click', showAddUserForm);
+      document.getElementById('searchUsersBtn').addEventListener('click', searchUsers);
+      break;
+      
+    case 'manageRestaurants':
+      dashboardMain.innerHTML = `
+        <h1 class="dashboard-title">Manage Restaurants</h1>
+        <div class="dashboard-form">
+          <div class="search-filter">
+            <input type="text" placeholder="Search restaurants..." id="restaurantSearch">
+            <button class="btn btn-primary" id="searchRestaurantsBtn">Search</button>
+          </div>
+          <div class="restaurant-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Restaurant</th>
+                  <th>Cuisine</th>
+                  <th>Owner</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="restaurantsTableBody">
+                ${renderAllRestaurants()}
+              </tbody>
+            </table>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="addNewRestaurantBtn">Add New Restaurant</button>
+            <button class="btn btn-outline" id="backToDashboardBtn">Back to Dashboard</button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('backToDashboardBtn').addEventListener('click', showDashboard);
+      document.getElementById('addNewRestaurantBtn').addEventListener('click', showAddRestaurantForm);
+      document.getElementById('searchRestaurantsBtn').addEventListener('click', searchRestaurants);
+      break;
+      
+    case 'manageDelivery':
+      dashboardMain.innerHTML = `
+        <h1 class="dashboard-title">Manage Delivery Personnel</h1>
+        <div class="dashboard-form">
+          <div class="search-filter">
+            <input type="text" placeholder="Search delivery..." id="deliverySearch">
+            <button class="btn btn-primary" id="searchDeliveryBtn">Search</button>
+          </div>
+          <div class="delivery-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Vehicle</th>
+                  <th>Status</th>
+                  <th>Deliveries</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="deliveryTableBody">
+                ${renderAllDelivery()}
+              </tbody>
+            </table>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="addNewDeliveryBtn">Add New Delivery</button>
+            <button class="btn btn-outline" id="backToDashboardBtn">Back to Dashboard</button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('backToDashboardBtn').addEventListener('click', showDashboard);
+      document.getElementById('addNewDeliveryBtn').addEventListener('click', showAddDeliveryForm);
+      document.getElementById('searchDeliveryBtn').addEventListener('click', searchDelivery);
+      break;
+      
+    case 'viewOrders':
+      dashboardMain.innerHTML = `
+        <h1 class="dashboard-title">All Orders</h1>
+        <div class="dashboard-form">
+          <div class="search-filter">
+            <input type="text" placeholder="Search orders..." id="orderSearch">
+            <button class="btn btn-primary" id="searchOrdersBtn">Search</button>
+            <select id="orderStatusFilter">
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="accepted">Accepted</option>
+              <option value="preparing">Preparing</option>
+              <option value="ready">Ready</option>
+              <option value="on-the-way">On the Way</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="orders-management">
+            <div class="orders-list">
+              ${renderAllOrders()}
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-outline" id="backToDashboardBtn">Back to Dashboard</button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('backToDashboardBtn').addEventListener('click', showDashboard);
+      document.getElementById('searchOrdersBtn').addEventListener('click', filterOrders);
+      document.getElementById('orderStatusFilter').addEventListener('change', filterOrders);
+      break;
+      
+    case 'platformStats':
+      dashboardMain.innerHTML = `
+        <h1 class="dashboard-title">Platform Statistics</h1>
+        <div class="dashboard-form">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h3>Total Users</h3>
+              <p class="stat-value">${users.user.length}</p>
+            </div>
+            <div class="stat-card">
+              <h3>Total Restaurants</h3>
+              <p class="stat-value">${users.restaurant.length}</p>
+            </div>
+            <div class="stat-card">
+              <h3>Total Delivery</h3>
+              <p class="stat-value">${users.delivery.length}</p>
+            </div>
+            <div class="stat-card">
+              <h3>Total Orders</h3>
+              <p class="stat-value">${orders.length}</p>
+            </div>
+          </div>
+          <div class="chart-placeholder" style="height: 300px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; margin: 20px 0; border-radius: 8px;">
+            <p>Order Volume Chart (would be implemented with a charting library)</p>
+          </div>
+          <div class="recent-activity">
+            <h3>Recent Activity</h3>
+            <div class="activity-list">
+              ${renderRecentActivity()}
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-outline" id="backToDashboardBtn">Back to Dashboard</button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('backToDashboardBtn').addEventListener('click', showDashboard);
+      break;
+      
+    case 'managePromotions':
+      dashboardMain.innerHTML = `
+        <h1 class="dashboard-title">Manage Promotions</h1>
+        <div class="dashboard-form">
+          <div class="promotions-management">
+            <div class="promotions-header">
+              <h3>Current Promotions</h3>
+              <button class="btn btn-primary" id="addPromotionBtn">Add Promotion</button>
+            </div>
+            <div class="promotions-list">
+              ${renderPromotions()}
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-outline" id="backToDashboardBtn">Back to Dashboard</button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('backToDashboardBtn').addEventListener('click', showDashboard);
+      document.getElementById('addPromotionBtn').addEventListener('click', showAddPromotionForm);
+      break;
+  }
+}
+
+// Helper functions for admin dashboard
+function renderAllUsers() {
+  let html = '';
+  
+  // Add admin users
+  users.admin.forEach(user => {
+    if (user.username !== 'admin') { // Skip the main admin account
+      html += `
+        <tr>
+          <td>${user.username}</td>
+          <td>${user.name}</td>
+          <td>Admin</td>
+          <td><span class="status-badge active">Active</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline edit-user" data-username="${user.username}" data-type="admin">Edit</button>
+            <button class="btn btn-sm btn-danger delete-user" data-username="${user.username}" data-type="admin">Delete</button>
+          </td>
+        </tr>
+      `;
+    }
+  });
+  
+  // Add restaurant users
+  users.restaurant.forEach(user => {
+    if (user.username !== 'admin') { // Skip the admin account in restaurants
+      html += `
+        <tr>
+          <td>${user.username}</td>
+          <td>${user.name}</td>
+          <td>Restaurant (${user.restaurant})</td>
+          <td><span class="status-badge ${user.status === 'active' ? 'active' : 'pending'}">${user.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline edit-user" data-username="${user.username}" data-type="restaurant">Edit</button>
+            <button class="btn btn-sm btn-danger delete-user" data-username="${user.username}" data-type="restaurant">Delete</button>
+            <button class="btn btn-sm ${user.status === 'active' ? 'btn-warning' : 'btn-primary'} toggle-status" data-username="${user.username}" data-type="restaurant">
+              ${user.status === 'active' ? 'Suspend' : 'Activate'}
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+  });
+  
+  // Add delivery users
+  users.delivery.forEach(user => {
+    if (user.username !== 'admin') { // Skip the admin account in delivery
+      html += `
+        <tr>
+          <td>${user.username}</td>
+          <td>${user.name}</td>
+          <td>Delivery</td>
+          <td><span class="status-badge ${user.status === 'active' ? 'active' : 'pending'}">${user.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline edit-user" data-username="${user.username}" data-type="delivery">Edit</button>
+            <button class="btn btn-sm btn-danger delete-user" data-username="${user.username}" data-type="delivery">Delete</button>
+            <button class="btn btn-sm ${user.status === 'active' ? 'btn-warning' : 'btn-primary'} toggle-status" data-username="${user.username}" data-type="delivery">
+              ${user.status === 'active' ? 'Deactivate' : 'Activate'}
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+  });
+  
+  // Add regular users
+  users.user.forEach(user => {
+    if (user.username !== 'admin') { // Skip the admin account in users
+      html += `
+        <tr>
+          <td>${user.username}</td>
+          <td>${user.name}</td>
+          <td>User</td>
+          <td><span class="status-badge active">Active</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline edit-user" data-username="${user.username}" data-type="user">Edit</button>
+            <button class="btn btn-sm btn-danger delete-user" data-username="${user.username}" data-type="user">Delete</button>
+            <button class="btn btn-sm btn-warning toggle-status" data-username="${user.username}" data-type="user">Suspend</button>
+          </td>
+        </tr>
+      `;
+    }
+  });
+  
+  return html;
+}
+
+function renderAllRestaurants() {
+  let html = '';
+  
+  users.restaurant.forEach(restaurant => {
+    if (restaurant.username !== 'admin') { // Skip the admin account
+      html += `
+        <tr>
+          <td>${restaurant.restaurant}</td>
+          <td>${restaurant.cuisine}</td>
+          <td>${restaurant.name}</td>
+          <td><span class="status-badge ${restaurant.status === 'active' ? 'active' : 'pending'}">${restaurant.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline edit-restaurant" data-username="${restaurant.username}">Edit</button>
+            <button class="btn btn-sm btn-danger delete-restaurant" data-username="${restaurant.username}">Delete</button>
+            <button class="btn btn-sm ${restaurant.status === 'active' ? 'btn-warning' : 'btn-primary'} toggle-restaurant" data-username="${restaurant.username}">
+              ${restaurant.status === 'active' ? 'Suspend' : 'Approve'}
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+  });
+  
+  return html;
+}
+
+function renderAllDelivery() {
+  let html = '';
+  
+  users.delivery.forEach(delivery => {
+    if (delivery.username !== 'admin') { // Skip the admin account
+      html += `
+        <tr>
+          <td>${delivery.name}</td>
+          <td>${delivery.vehicleType}</td>
+          <td><span class="status-badge ${delivery.status === 'active' ? 'active' : 'pending'}">${delivery.status}</span></td>
+          <td>${delivery.deliveries.length}</td>
+          <td>
+            <button class="btn btn-sm btn-outline edit-delivery" data-username="${delivery.username}">Edit</button>
+            <button class="btn btn-sm btn-danger delete-delivery" data-username="${delivery.username}">Delete</button>
+            <button class="btn btn-sm ${delivery.status === 'active' ? 'btn-warning' : 'btn-primary'} toggle-delivery" data-username="${delivery.username}">
+              ${delivery.status === 'active' ? 'Deactivate' : 'Activate'}
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+  });
+  
+  return html;
+}
+
+function renderAllOrders() {
+  let html = '';
+  
+  // Sort orders by date (newest first)
+  const sortedOrders = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  sortedOrders.forEach(order => {
+    const user = users.user.find(u => u.username === order.userId);
+    const restaurant = users.restaurant.find(r => r.username === order.restaurantId);
+    
+    html += `
+      <div class="order-card">
+        <div class="order-header">
+          <span class="order-id">Order #${order.id}</span>
+          <span class="order-date">${order.date}</span>
+          <span class="order-status ${order.status}">${order.status.replace('-', ' ')}</span>
+        </div>
+        <div class="order-details">
+          <p><strong>Customer:</strong> ${user ? user.name : order.userId}</p>
+          <p><strong>Restaurant:</strong> ${restaurant ? restaurant.restaurant : order.restaurantId}</p>
+          <p><strong>Items:</strong> ${order.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}</p>
+          <p><strong>Total:</strong> ৳${(order.total * exchangeRate).toFixed(2)}</p>
+          ${order.deliveryPerson ? `<p><strong>Delivery:</strong> ${order.deliveryPerson}</p>` : ''}
+        </div>
+        <div class="order-actions">
+          <button class="btn btn-sm btn-primary view-order" data-id="${order.id}">View Details</button>
+          ${order.status === 'pending' ? `<button class="btn btn-sm btn-outline assign-delivery" data-id="${order.id}">Assign Delivery</button>` : ''}
+          ${order.status !== 'cancelled' && order.status !== 'delivered' ? `<button class="btn btn-sm btn-danger cancel-order" data-id="${order.id}">Cancel Order</button>` : ''}
+        </div>
+      </div>
+    `;
+  });
+  
+  return html;
+}
+
+function renderRecentActivity() {
+  // Combine all possible activities
+  const activities = [];
+  
+  // Add user registrations
+  users.user.forEach(user => {
+    if (user.username !== 'admin') {
+      activities.push({
+        type: 'user',
+        action: 'registered',
+        name: user.name,
+        date: user.joinDate,
+        timestamp: new Date(user.joinDate).getTime()
+      });
+    }
+  });
+  
+  // Add restaurant registrations
+  users.restaurant.forEach(restaurant => {
+    if (restaurant.username !== 'admin') {
+      activities.push({
+        type: 'restaurant',
+        action: 'registered',
+        name: restaurant.restaurant,
+        date: restaurant.joinDate,
+        timestamp: new Date(restaurant.joinDate).getTime()
+      });
+    }
+  });
+  
+  // Add delivery registrations
+  users.delivery.forEach(delivery => {
+    if (delivery.username !== 'admin') {
+      activities.push({
+        type: 'delivery',
+        action: 'registered',
+        name: delivery.name,
+        date: delivery.joinDate,
+        timestamp: new Date(delivery.joinDate).getTime()
+      });
+    }
+  });
+  
+  // Add orders
+  orders.forEach(order => {
+    activities.push({
+      type: 'order',
+      action: 'placed',
+      id: order.id,
+      date: order.date,
+      timestamp: order.timestamp,
+      total: order.total
+    });
+  });
+  
+  // Sort by timestamp (newest first)
+  activities.sort((a, b) => b.timestamp - a.timestamp);
+  
+  // Take only the 5 most recent
+  const recentActivities = activities.slice(0, 5);
+  
+  // Generate HTML
+  let html = '';
+  recentActivities.forEach(activity => {
+    if (activity.type === 'order') {
+      html += `
+        <div class="activity-item">
+          <i class="fas fa-shopping-bag"></i>
+          <div class="activity-info">
+            <p>Order #${activity.id} placed</p>
+            <small>${activity.date} • ৳${(activity.total * exchangeRate).toFixed(2)}</small>
+          </div>
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="activity-item">
+          <i class="fas fa-user${activity.type === 'restaurant' ? '-tie' : (activity.type === 'delivery' ? '-shirt' : '')}"></i>
+          <div class="activity-info">
+            <p>${activity.name} ${activity.action} as ${activity.type}</p>
+            <small>${activity.date}</small>
+          </div>
+        </div>
+      `;
+    }
+  });
+  
+  return html;
+}
+
+function renderPromotions() {
+  // In a real app, this would come from a database
+  // For our demo, we'll use some sample promotions
+  const promotions = [
+    {
+      id: 1,
+      name: "New User Discount",
+      code: "WELCOME20",
+      discount: "20%",
+      validUntil: "2023-12-31",
+      status: "active"
+    },
+    {
+      id: 2,
+      name: "Free Delivery Weekend",
+      code: "FREEDEL",
+      discount: "Free Delivery",
+      validUntil: "2023-11-30",
+      status: "active"
+    },
+    {
+      id: 3,
+      name: "Holiday Special",
+      code: "HOLIDAY25",
+      discount: "25%",
+      validUntil: "2023-12-25",
+      status: "upcoming"
+    }
+  ];
+  
+  let html = '';
+  
+  promotions.forEach(promo => {
+    html += `
+      <div class="promotion-card">
+        <h4>${promo.name}</h4>
+        <p><strong>Code:</strong> ${promo.code}</p>
+        <p><strong>Discount:</strong> ${promo.discount}</p>
+        <p><strong>Valid Until:</strong> ${promo.validUntil}</p>
+        <p><strong>Status:</strong> <span class="status-badge ${promo.status === 'active' ? 'active' : 'pending'}">${promo.status}</span></p>
+        <div class="promotion-actions">
+          <button class="btn btn-sm btn-outline edit-promo" data-id="${promo.id}">Edit</button>
+          <button class="btn btn-sm ${promo.status === 'active' ? 'btn-warning' : 'btn-primary'} toggle-promo" data-id="${promo.id}">
+            ${promo.status === 'active' ? 'Deactivate' : 'Activate'}
+          </button>
+          <button class="btn btn-sm btn-danger delete-promo" data-id="${promo.id}">Delete</button>
+        </div>
+      </div>
+    `;
+  });
+  
+  return html;
+}
+
+// Add these functions to the existing addDashboardEventListeners function
+function addDashboardEventListeners() {
+  // Dashboard card click handlers
+  document.querySelectorAll('.dashboard-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const id = this.id;
+      if (currentUser && currentUser.type === 'admin') {
+        handleAdminDashboardActions(id);
+      } else {
+        alert(`Navigating to ${id.replace(/([A-Z])/g, ' $1').trim()}`);
+      }
+    });
+  });
+  
+  // ... rest of the existing function ...
+}
+
+// Add these helper functions for admin actions
+function showAddUserForm() {
+  const dashboardMain = document.querySelector('.dashboard-main .container');
+  
+  dashboardMain.innerHTML = `
+    <h1 class="dashboard-title">Add New User</h1>
+    <div class="dashboard-form">
+      <form id="addUserForm">
+        <div class="form-group">
+          <label for="userType">User Type:</label>
+          <select id="userType" required>
+            <option value="">Select User Type</option>
+            <option value="admin">Admin</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="delivery">Delivery</option>
+            <option value="user">Regular User</option>
+          </select>
+        </div>
+        
+        <div id="userFormFields"></div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save User</button>
+          <button type="button" class="btn btn-outline" id="cancelAddUser">Cancel</button>
+        </div>
+      </form>
+    </div>
+  `;
+  
+  document.getElementById('userType').addEventListener('change', function() {
+    const userType = this.value;
+    const userFormFields = document.getElementById('userFormFields');
+    
+    if (!userType) {
+      userFormFields.innerHTML = '';
+      return;
+    }
+    
+    let fields = `
+      <div class="form-group">
+        <label for="newUsername">Username:</label>
+        <input type="text" id="newUsername" required>
+      </div>
+      <div class="form-group">
+        <label for="newPassword">Password:</label>
+        <input type="password" id="newPassword" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label for="newName">Full Name:</label>
+        <input type="text" id="newName" required>
+      </div>
+      <div class="form-group">
+        <label for="newEmail">Email:</label>
+        <input type="email" id="newEmail" required>
+      </div>
+      <div class="form-group">
+        <label for="newPhone">Phone:</label>
+        <input type="tel" id="newPhone" required>
+      </div>
+    `;
+    
+    if (userType === 'restaurant') {
+      fields += `
+        <div class="form-group">
+          <label for="restaurantName">Restaurant Name:</label>
+          <input type="text" id="restaurantName" required>
+        </div>
+        <div class="form-group">
+          <label for="restaurantCuisine">Cuisine Type:</label>
+          <input type="text" id="restaurantCuisine" required>
+        </div>
+      `;
+    } else if (userType === 'delivery') {
+      fields += `
+        <div class="form-group">
+          <label for="deliveryVehicle">Vehicle Type:</label>
+          <select id="deliveryVehicle" required>
+            <option value="">Select Vehicle</option>
+            <option value="bike">Bike</option>
+            <option value="car">Car</option>
+            <option value="scooter">Scooter</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="deliveryLicense">License Number:</label>
+          <input type="text" id="deliveryLicense" required>
+        </div>
+      `;
+    }
+    
+    userFormFields.innerHTML = fields;
+  });
+  
+  document.getElementById('cancelAddUser').addEventListener('click', function() {
+    handleAdminDashboardActions('manageUsers');
+  });
+  
+  document.getElementById('addUserForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    addNewUser();
+  });
+}
+
+function addNewUser() {
+  const userType = document.getElementById('userType').value;
+  const username = document.getElementById('newUsername').value.trim();
+  const password = document.getElementById('newPassword').value.trim();
+  const name = document.getElementById('newName').value.trim();
+  const email = document.getElementById('newEmail').value.trim();
+  const phone = document.getElementById('newPhone').value.trim();
+  
+  if (!userType || !username || !password || !name || !email || !phone) {
+    alert('Please fill in all required fields');
+    return;
+  }
+  
+  // Check if username already exists
+  if (users[userType].some(u => u.username === username)) {
+    alert('Username already exists');
+    return;
+  }
+  
+  const newUser = {
+    username,
+    password,
+    name,
+    email,
+    phone,
+    joinDate: new Date().toISOString().split('T')[0],
+    status: 'active'
+  };
+  
+  if (userType === 'restaurant') {
+    newUser.restaurant = document.getElementById('restaurantName').value.trim();
+    newUser.cuisine = document.getElementById('restaurantCuisine').value.trim();
+    newUser.menu = [];
+    newUser.orders = [];
+  } else if (userType === 'delivery') {
+    newUser.vehicleType = document.getElementById('deliveryVehicle').value;
+    newUser.licenseNumber = document.getElementById('deliveryLicense').value.trim();
+    newUser.deliveries = [];
+    newUser.availability = 'full-time';
+  } else if (userType === 'user') {
+    newUser.paymentMethods = [];
+    newUser.orders = [];
+    newUser.cart = [];
+  }
+  
+  users[userType].push(newUser);
+  showToast(`${userType.charAt(0).toUpperCase() + userType.slice(1)} user ${username} created successfully`);
+  handleAdminDashboardActions('manageUsers');
+}
+
+// Similar functions would be needed for restaurants, delivery, promotions, etc.
+// For brevity, I'm showing the pattern but not implementing all of them
+
+function showAddRestaurantForm() {
+  // Similar to showAddUserForm but for restaurants
+  alert('Add Restaurant form would be implemented here');
+}
+
+function showAddDeliveryForm() {
+  // Similar to showAddUserForm but for delivery personnel
+  alert('Add Delivery form would be implemented here');
+}
+
+function showAddPromotionForm() {
+  // Implementation for adding promotions
+  alert('Add Promotion form would be implemented here');
+}
+
+function searchUsers() {
+  const searchTerm = document.getElementById('userSearch').value.trim().toLowerCase();
+  const rows = document.querySelectorAll('#usersTableBody tr');
+  
+  rows.forEach(row => {
+    const username = row.cells[0].textContent.toLowerCase();
+    const name = row.cells[1].textContent.toLowerCase();
+    const type = row.cells[2].textContent.toLowerCase();
+    
+    if (username.includes(searchTerm) || name.includes(searchTerm) || type.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+function searchRestaurants() {
+  const searchTerm = document.getElementById('restaurantSearch').value.trim().toLowerCase();
+  const rows = document.querySelectorAll('#restaurantsTableBody tr');
+  
+  rows.forEach(row => {
+    const restaurant = row.cells[0].textContent.toLowerCase();
+    const cuisine = row.cells[1].textContent.toLowerCase();
+    const owner = row.cells[2].textContent.toLowerCase();
+    
+    if (restaurant.includes(searchTerm) || cuisine.includes(searchTerm) || owner.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+function searchDelivery() {
+  const searchTerm = document.getElementById('deliverySearch').value.trim().toLowerCase();
+  const rows = document.querySelectorAll('#deliveryTableBody tr');
+  
+  rows.forEach(row => {
+    const name = row.cells[0].textContent.toLowerCase();
+    const vehicle = row.cells[1].textContent.toLowerCase();
+    
+    if (name.includes(searchTerm) || vehicle.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+function filterOrders() {
+  const searchTerm = document.getElementById('orderSearch').value.trim().toLowerCase();
+  const statusFilter = document.getElementById('orderStatusFilter').value;
+  const orderCards = document.querySelectorAll('.orders-list .order-card');
+  
+  orderCards.forEach(card => {
+    const orderId = card.querySelector('.order-id').textContent.toLowerCase();
+    const status = card.querySelector('.order-status').textContent.toLowerCase().replace(' ', '-');
+    const customer = card.querySelector('.order-details p:nth-child(1)').textContent.toLowerCase();
+    const restaurant = card.querySelector('.order-details p:nth-child(2)').textContent.toLowerCase();
+    
+    const matchesSearch = orderId.includes(searchTerm) || customer.includes(searchTerm) || restaurant.includes(searchTerm);
+    const matchesStatus = !statusFilter || status === statusFilter;
+    
+    if (matchesSearch && matchesStatus) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
 // Add this function to update order displays
 function updateOrderDisplays() {
+    // Only update if we're on a page that needs updating
     if (document.getElementById('dashboardContainer').style.display === 'block') {
-        showDashboard();
+        const user = getUserData();
+        if (!user) return;
+        
+        // Don't refresh if we're in the middle of admin management
+        const isManaging = document.querySelector('.dashboard-form') !== null;
+        if (isManaging && currentUser.type === 'admin') return;
+        
+        showDashboard(); // Refresh dashboard view
     }
     
     if (document.getElementById('cartModal').style.display === 'block') {
@@ -1392,6 +2201,25 @@ function showDashboard() {
             <i class="fas fa-caret-down"></i>
         `;
     }
+    
+    // Add back to main button for admin
+    if (currentUser.type === 'admin') {
+        const backButtonHTML = `
+            <div class="back-to-dashboard">
+                <a href="#" id="backToMain"><i class="fas fa-arrow-left"></i> Back to Main Site</a>
+            </div>
+        `;
+        dashboardMain.insertAdjacentHTML('beforeend', backButtonHTML);
+        
+        // Add event listener for the back button
+        const backToMainBtn = document.getElementById('backToMain');
+        if (backToMainBtn) {
+            backToMainBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                hideDashboard();
+            });
+        }
+    }
 }
 
 function getDashboardTitle() {
@@ -1676,14 +2504,19 @@ function renderOrderCard(order) {
 }
 
 function addDashboardEventListeners() {
-    // Dashboard card click handlers
-    document.querySelectorAll('.dashboard-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const id = this.id;
-            alert(`Navigating to ${id.replace(/([A-Z])/g, ' $1').trim()}`);
-            // In a real app, this would load the appropriate section
-        });
+  // Dashboard card click handlers
+  document.querySelectorAll('.dashboard-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const id = this.id;
+      if (currentUser && currentUser.type === 'admin') {
+        handleAdminDashboardActions(id);
+      } else {
+        // Handle other user types (restaurant, delivery, user)
+        alert(`Navigating to ${id.replace(/([A-Z])/g, ' $1').trim()}`);
+      }
     });
+  });
+
     
     // User dropdown menu
     const userMenuBtn = document.getElementById('userMenuBtn');
@@ -1811,6 +2644,9 @@ function hideDashboard() {
     // Show main content and footer
     mainContent.style.display = 'block';
     mainFooter.style.display = 'block';
+    
+    // Reset the food grid to default view
+    loadFoodItems('pizza');
 }
 
 // Logout function
