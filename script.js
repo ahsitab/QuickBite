@@ -155,7 +155,7 @@ const users = {
 let currentUser = null;
 
 // Exchange rate (1 USD to BDT) - would normally fetch this from an API
-let exchangeRate = 117.50;
+let exchangeRate = 80.50;
 
 // Orders data
 let orders = [
@@ -2420,9 +2420,15 @@ function getRecentOrdersSection(user) {
             break;
             
         case 'delivery':
-            // Delivery person sees their assigned orders
-            const deliveryOrders = orders.filter(o => o.deliveryPerson === user.name && 
-                (o.status === ORDER_STATUS.ON_THE_WAY || o.status === ORDER_STATUS.PENDING)).slice(0, 5);
+            // Delivery person sees their assigned orders (both assigned and in-progress)
+            const deliveryOrders = orders.filter(o => 
+                o.deliveryPerson === user.name && 
+                (o.status === ORDER_STATUS.ACCEPTED || 
+                 o.status === ORDER_STATUS.PREPARING || 
+                 o.status === ORDER_STATUS.READY || 
+                 o.status === ORDER_STATUS.ON_THE_WAY)
+            ).slice(0, 5);
+            
             if (deliveryOrders.length === 0) {
                 ordersHTML += '<p>No current delivery assignments</p>';
             } else {
@@ -2470,6 +2476,7 @@ function renderOrderCard(order) {
                 <button class="btn btn-sm btn-primary">View Details</button>
                 ${order.status === ORDER_STATUS.READY ? '<button class="btn btn-sm btn-outline" data-action="pick up order">Pick Up Order</button>' : ''}
                 ${order.status === ORDER_STATUS.ON_THE_WAY ? '<button class="btn btn-sm btn-outline" data-action="mark as delivered">Mark as Delivered</button>' : ''}
+                ${order.status === ORDER_STATUS.ACCEPTED ? '<button class="btn btn-sm btn-outline" data-action="acknowledge assignment">Acknowledge</button>' : ''}
             `;
             break;
             
@@ -2495,6 +2502,7 @@ function renderOrderCard(order) {
                 ${currentUser.type !== 'restaurant' ? `<p><strong>Restaurant:</strong> ${order.restaurantId}</p>` : ''}
                 <p><strong>Items:</strong> ${order.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}</p>
                 <p><strong>Total:</strong> ৳${(order.total * exchangeRate).toFixed(2)}</p>
+                ${order.deliveryPerson && currentUser.type === 'delivery' ? `<p><strong>Assigned To:</strong> You</p>` : ''}
             </div>
             <div class="order-actions">
                 ${actionsHTML}
@@ -2763,14 +2771,24 @@ function assignDeliveryPartner(order) {
         `;
         
         deliveryItem.addEventListener('click', () => {
+            // Update the order
             order.deliveryPerson = delivery.name;
             order.status = ORDER_STATUS.ACCEPTED;
-            delivery.deliveries.push({
-                orderId: order.id,
-                restaurant: order.restaurantId,
-                date: new Date().toISOString().split('T')[0],
-                status: 'assigned'
-            });
+            
+            // Find the delivery user in the users.delivery array
+            const deliveryUser = users.delivery.find(d => d.username === delivery.username);
+            if (deliveryUser) {
+                // Add the delivery assignment
+                deliveryUser.deliveries.push({
+                    orderId: order.id,
+                    restaurant: order.restaurantId,
+                    customer: order.userId,
+                    items: order.items,
+                    total: order.total,
+                    date: new Date().toISOString().split('T')[0],
+                    status: 'assigned'
+                });
+            }
             
             showToast(`Assigned ${delivery.name} to Order #${order.id}`);
             updateOrderStatus(order);
