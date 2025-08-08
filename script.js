@@ -191,25 +191,27 @@ let orders = [
 
 // Add this function to simulate real-time updates
 function setupRealTimeUpdates() {
-    // Only check for updates if we're on the dashboard or cart
+    // This code block was causing the automatic refresh and should be removed or commented out.
+
+    /*
     setInterval(() => {
         if (currentUser) {
             // Only update if dashboard is visible
             if (document.getElementById('dashboardContainer').style.display === 'block') {
                 // Only refresh if we're not in the middle of an admin action
-                const isAdminView = currentUser.type === 'admin' && 
+                const isAdminView = currentUser.type === 'admin' &&
                     document.querySelector('.dashboard-form') !== null;
-                
+
                 if (!isAdminView) {
                     updateOrderDisplays();
                 }
             }
-            
             // Always check for new orders (shows toast notifications)
             checkForNewOrders();
         }
     }, 3000);
-    
+    */
+
     // Initialize real-time updates when the page loads
     updateOrderDisplays();
 }
@@ -2692,6 +2694,745 @@ function searchFoodItems(term) {
     }
     
     return results;
+}
+
+// Delivery Dashboard Functions
+function showDeliveryDashboard() {
+    const user = getUserData();
+    if (!user || currentUser.type !== 'delivery') return;
+
+    const dashboardMain = document.querySelector('.dashboard-main .container');
+    dashboardMain.innerHTML = `
+        <h1 class="dashboard-title">Delivery Dashboard</h1>
+        <div class="welcome-message">
+            <p>Welcome back, ${user.name}! Here you can view your delivery assignments and update your status.</p>
+        </div>
+        
+        <div class="dashboard-sections">
+            <div class="dashboard-card" id="deliveryAssignments">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>Current Assignments</h3>
+                <p>View your current delivery orders</p>
+            </div>
+            <div class="dashboard-card" id="deliveryHistory">
+                <i class="fas fa-history"></i>
+                <h3>Delivery History</h3>
+                <p>View your past deliveries</p>
+            </div>
+            <div class="dashboard-card" id="deliveryProfile">
+                <i class="fas fa-user"></i>
+                <h3>Profile</h3>
+                <p>Update your personal information</p>
+            </div>
+            <div class="dashboard-card" id="deliveryAvailability">
+                <i class="fas fa-calendar-check"></i>
+                <h3>Availability</h3>
+                <p>Set your working hours</p>
+            </div>
+            <div class="dashboard-card" id="deliveryEarnings">
+                <i class="fas fa-money-bill-wave"></i>
+                <h3>Earnings</h3>
+                <p>View your payments and earnings</p>
+            </div>
+            <div class="dashboard-card" id="deliveryRatings">
+                <i class="fas fa-star"></i>
+                <h3>Ratings</h3>
+                <p>View customer ratings and feedback</p>
+            </div>
+        </div>
+        
+        <div class="delivery-content-section">
+            ${renderDeliveryAssignments(user)}
+        </div>
+        
+        <div class="back-to-dashboard">
+            <a href="#" id="backToMain"><i class="fas fa-arrow-left"></i> Back to Main Site</a>
+        </div>
+    `;
+
+    // Add event listeners
+    addDeliveryDashboardEventListeners();
+}
+
+function renderDeliveryAssignments(user) {
+    // Get current assignments (orders that are ready, on the way, or assigned)
+    const currentAssignments = orders.filter(o => 
+        o.deliveryPerson === user.name && 
+        (o.status === ORDER_STATUS.ACCEPTED || 
+         o.status === ORDER_STATUS.READY || 
+         o.status === ORDER_STATUS.ON_THE_WAY)
+    );
+
+    // Get past deliveries (delivered or cancelled)
+    const pastDeliveries = orders.filter(o => 
+        o.deliveryPerson === user.name && 
+        (o.status === ORDER_STATUS.DELIVERED || 
+         o.status === ORDER_STATUS.CANCELLED)
+    );
+
+    return `
+        <div class="delivery-assignments-section">
+            <h3>Current Assignments</h3>
+            ${currentAssignments.length > 0 ? 
+                currentAssignments.map(order => renderDeliveryOrderCard(order)).join('') : 
+                '<p>No current assignments</p>'}
+        </div>
+    `;
+}
+
+function renderDeliveryOrderCard(order) {
+    const restaurant = users.restaurant.find(r => r.username === order.restaurantId);
+    const customer = users.user.find(u => u.username === order.userId);
+    
+    let actions = '';
+    
+    if (order.status === ORDER_STATUS.ACCEPTED) {
+        actions = `
+            <button class="btn btn-sm btn-primary" data-action="acknowledge">Acknowledge</button>
+        `;
+    } else if (order.status === ORDER_STATUS.READY) {
+        actions = `
+            <button class="btn btn-sm btn-primary" data-action="pickup">Pick Up Order</button>
+            <button class="btn btn-sm btn-outline" data-action="directions">Get Directions</button>
+        `;
+    } else if (order.status === ORDER_STATUS.ON_THE_WAY) {
+        actions = `
+            <button class="btn btn-sm btn-primary" data-action="delivered">Mark as Delivered</button>
+            <button class="btn btn-sm btn-outline" data-action="contact">Contact Customer</button>
+        `;
+    }
+    
+    return `
+        <div class="delivery-order-card" data-order-id="${order.id}">
+            <div class="order-header">
+                <span class="order-id">Order #${order.id}</span>
+                <span class="order-status ${order.status}">${order.status.replace('-', ' ')}</span>
+            </div>
+            <div class="order-details">
+                <p><strong>Restaurant:</strong> ${restaurant ? restaurant.restaurant : order.restaurantId}</p>
+                <p><strong>Customer:</strong> ${customer ? customer.name : order.userId}</p>
+                <p><strong>Address:</strong> ${customer ? customer.address : 'Address not available'}</p>
+                <p><strong>Items:</strong> ${order.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}</p>
+                <p><strong>Total:</strong> ৳${(order.total * exchangeRate).toFixed(2)}</p>
+            </div>
+            <div class="order-actions">
+                ${actions}
+            </div>
+        </div>
+    `;
+}
+
+function addDeliveryDashboardEventListeners() {
+    // Card click handlers
+    document.getElementById('deliveryAssignments').addEventListener('click', showDeliveryAssignments);
+    document.getElementById('deliveryHistory').addEventListener('click', showDeliveryHistory);
+    document.getElementById('deliveryProfile').addEventListener('click', showDeliveryProfile);
+    document.getElementById('deliveryAvailability').addEventListener('click', showDeliveryAvailability);
+    document.getElementById('deliveryEarnings').addEventListener('click', showDeliveryEarnings);
+    document.getElementById('deliveryRatings').addEventListener('click', showDeliveryRatings);
+    
+    // Order action buttons
+    document.querySelectorAll('.delivery-order-card .order-actions button').forEach(button => {
+        button.addEventListener('click', function() {
+            const orderId = this.closest('.delivery-order-card').getAttribute('data-order-id');
+            const action = this.getAttribute('data-action');
+            handleDeliveryAction(orderId, action);
+        });
+    });
+    
+    // Back button
+    document.getElementById('backToMain').addEventListener('click', function(e) {
+        e.preventDefault();
+        hideDashboard();
+    });
+}
+
+function showDeliveryAssignments() {
+    const user = getUserData();
+    if (!user) return;
+    
+    const currentAssignments = orders.filter(o => 
+        o.deliveryPerson === user.name && 
+        (o.status === ORDER_STATUS.ACCEPTED || 
+         o.status === ORDER_STATUS.READY || 
+         o.status === ORDER_STATUS.ON_THE_WAY)
+    );
+    
+    const contentSection = document.querySelector('.delivery-content-section');
+    contentSection.innerHTML = `
+        <h3>Current Assignments</h3>
+        ${currentAssignments.length > 0 ? 
+            currentAssignments.map(order => renderDeliveryOrderCard(order)).join('') : 
+            '<p>No current assignments</p>'}
+    `;
+    
+    // Re-add event listeners
+    document.querySelectorAll('.delivery-order-card .order-actions button').forEach(button => {
+        button.addEventListener('click', function() {
+            const orderId = this.closest('.delivery-order-card').getAttribute('data-order-id');
+            const action = this.getAttribute('data-action');
+            handleDeliveryAction(orderId, action);
+        });
+    });
+}
+
+function showDeliveryHistory() {
+    const user = getUserData();
+    if (!user) return;
+    
+    const pastDeliveries = orders.filter(o => 
+        o.deliveryPerson === user.name && 
+        (o.status === ORDER_STATUS.DELIVERED || 
+         o.status === ORDER_STATUS.CANCELLED)
+    ).sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    const contentSection = document.querySelector('.delivery-content-section');
+    contentSection.innerHTML = `
+        <h3>Delivery History</h3>
+        ${pastDeliveries.length > 0 ? 
+            pastDeliveries.map(order => renderDeliveryHistoryCard(order)).join('') : 
+            '<p>No delivery history yet</p>'}
+    `;
+}
+
+function renderDeliveryHistoryCard(order) {
+    const restaurant = users.restaurant.find(r => r.username === order.restaurantId);
+    const customer = users.user.find(u => u.username === order.userId);
+    
+    return `
+        <div class="delivery-history-card">
+            <div class="order-header">
+                <span class="order-id">Order #${order.id}</span>
+                <span class="order-date">${order.date}</span>
+                <span class="order-status ${order.status}">${order.status.replace('-', ' ')}</span>
+            </div>
+            <div class="order-details">
+                <p><strong>Restaurant:</strong> ${restaurant ? restaurant.restaurant : order.restaurantId}</p>
+                <p><strong>Customer:</strong> ${customer ? customer.name : order.userId}</p>
+                <p><strong>Items:</strong> ${order.items.map(item => `${item.name} (x${item.quantity})`).join(', ')}</p>
+                <p><strong>Total:</strong> ৳${(order.total * exchangeRate).toFixed(2)}</p>
+                ${order.status === ORDER_STATUS.DELIVERED ? `
+                <div class="delivery-rating">
+                    <span class="stars">★★★★★</span>
+                    <p>"Great delivery service!"</p>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function showDeliveryProfile() {
+    const user = getUserData();
+    if (!user) return;
+    
+    const contentSection = document.querySelector('.delivery-content-section');
+    contentSection.innerHTML = `
+        <div class="delivery-profile-form">
+            <h3>Profile Information</h3>
+            <form id="deliveryProfileForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryProfileName">Full Name</label>
+                        <input type="text" id="deliveryProfileName" value="${user.name}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryProfileEmail">Email</label>
+                        <input type="email" id="deliveryProfileEmail" value="${user.email}" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryProfilePhone">Phone</label>
+                        <input type="tel" id="deliveryProfilePhone" value="${user.phone}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryProfileVehicle">Vehicle Type</label>
+                        <select id="deliveryProfileVehicle" required>
+                            <option value="bike" ${user.vehicleType === 'bike' ? 'selected' : ''}>Bike</option>
+                            <option value="car" ${user.vehicleType === 'car' ? 'selected' : ''}>Car</option>
+                            <option value="scooter" ${user.vehicleType === 'scooter' ? 'selected' : ''}>Scooter</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="deliveryProfileLicense">License Number</label>
+                    <input type="text" id="deliveryProfileLicense" value="${user.licenseNumber}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="deliveryProfileAddress">Address</label>
+                    <textarea id="deliveryProfileAddress" rows="3" required>${user.address}</textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-outline" id="cancelProfileChanges">Cancel</button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    document.getElementById('deliveryProfileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveDeliveryProfile();
+    });
+    
+    document.getElementById('cancelProfileChanges').addEventListener('click', function() {
+        showDeliveryDashboard();
+    });
+}
+
+function saveDeliveryProfile() {
+    const user = getUserData();
+    if (!user) return;
+    
+    user.name = document.getElementById('deliveryProfileName').value.trim();
+    user.email = document.getElementById('deliveryProfileEmail').value.trim();
+    user.phone = document.getElementById('deliveryProfilePhone').value.trim();
+    user.vehicleType = document.getElementById('deliveryProfileVehicle').value;
+    user.licenseNumber = document.getElementById('deliveryProfileLicense').value.trim();
+    user.address = document.getElementById('deliveryProfileAddress').value.trim();
+    
+    showToast('Profile updated successfully!');
+    showDeliveryDashboard();
+}
+
+function showDeliveryAvailability() {
+    const user = getUserData();
+    if (!user) return;
+    
+    const contentSection = document.querySelector('.delivery-content-section');
+    contentSection.innerHTML = `
+        <div class="delivery-availability-form">
+            <h3>Set Your Availability</h3>
+            <form id="deliveryAvailabilityForm">
+                <div class="form-group">
+                    <label>Availability Status</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="availability" value="full-time" ${user.availability === 'full-time' ? 'checked' : ''}>
+                            Full-time
+                        </label>
+                        <label>
+                            <input type="radio" name="availability" value="part-time" ${user.availability === 'part-time' ? 'checked' : ''}>
+                            Part-time
+                        </label>
+                        <label>
+                            <input type="radio" name="availability" value="unavailable" ${user.availability === 'unavailable' ? 'checked' : ''}>
+                            Currently unavailable
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Working Days</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="workingDays" value="monday" checked> Monday</label>
+                        <label><input type="checkbox" name="workingDays" value="tuesday" checked> Tuesday</label>
+                        <label><input type="checkbox" name="workingDays" value="wednesday" checked> Wednesday</label>
+                        <label><input type="checkbox" name="workingDays" value="thursday" checked> Thursday</label>
+                        <label><input type="checkbox" name="workingDays" value="friday" checked> Friday</label>
+                        <label><input type="checkbox" name="workingDays" value="saturday" checked> Saturday</label>
+                        <label><input type="checkbox" name="workingDays" value="sunday" checked> Sunday</label>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startTime">Start Time</label>
+                        <input type="time" id="startTime" value="09:00">
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime">End Time</label>
+                        <input type="time" id="endTime" value="17:00">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Availability</button>
+                    <button type="button" class="btn btn-outline" id="cancelAvailabilityChanges">Cancel</button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    document.getElementById('deliveryAvailabilityForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveDeliveryAvailability();
+    });
+    
+    document.getElementById('cancelAvailabilityChanges').addEventListener('click', function() {
+        showDeliveryDashboard();
+    });
+}
+
+function saveDeliveryAvailability() {
+    const user = getUserData();
+    if (!user) return;
+    
+    const availability = document.querySelector('input[name="availability"]:checked').value;
+    const workingDays = Array.from(document.querySelectorAll('input[name="workingDays"]:checked')).map(cb => cb.value);
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
+    
+    user.availability = availability;
+    user.workingDays = workingDays;
+    user.workingHours = { start: startTime, end: endTime };
+    
+    showToast('Availability updated successfully!');
+    showDeliveryDashboard();
+}
+
+function showDeliveryEarnings() {
+    const user = getUserData();
+    if (!user) return;
+    
+    // Calculate earnings (in a real app, this would come from a database)
+    const completedDeliveries = orders.filter(o => 
+        o.deliveryPerson === user.name && 
+        o.status === ORDER_STATUS.DELIVERED
+    );
+    
+    const totalEarnings = completedDeliveries.reduce((sum, order) => sum + (order.total * 0.1), 0); // 10% of order total
+    
+    const contentSection = document.querySelector('.delivery-content-section');
+    contentSection.innerHTML = `
+        <div class="delivery-earnings">
+            <h3>Your Earnings</h3>
+            
+            <div class="earnings-summary">
+                <div class="earnings-card">
+                    <h4>Total Earnings</h4>
+                    <p class="earnings-amount">৳${(totalEarnings * exchangeRate).toFixed(2)}</p>
+                </div>
+                <div class="earnings-card">
+                    <h4>Completed Deliveries</h4>
+                    <p class="deliveries-count">${completedDeliveries.length}</p>
+                </div>
+                <div class="earnings-card">
+                    <h4>Average Rating</h4>
+                    <p class="rating">4.8 <span class="stars">★★★★★</span></p>
+                </div>
+            </div>
+            
+            <div class="earnings-breakdown">
+                <h4>Recent Earnings</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Order #</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${completedDeliveries.slice(0, 10).map(order => `
+                            <tr>
+                                <td>${order.date}</td>
+                                <td>#${order.id}</td>
+                                <td>৳${(order.total * 0.1 * exchangeRate).toFixed(2)}</td>
+                                <td><span class="status-badge delivered">Paid</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="withdrawal-section">
+                <h4>Withdraw Earnings</h4>
+                <p>Available balance: ৳${(totalEarnings * exchangeRate).toFixed(2)}</p>
+                <div class="withdrawal-form">
+                    <div class="form-group">
+                        <label for="withdrawalAmount">Amount (৳)</label>
+                        <input type="number" id="withdrawalAmount" min="100" max="${Math.floor(totalEarnings * exchangeRate)}" value="${Math.floor(totalEarnings * exchangeRate)}">
+                    </div>
+                    <div class="form-group">
+                        <label for="withdrawalMethod">Payment Method</label>
+                        <select id="withdrawalMethod">
+                            <option value="bKash">bKash</option>
+                            <option value="bank">Bank Transfer</option>
+                            <option value="cash">Cash Pickup</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="requestWithdrawal">Request Withdrawal</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('requestWithdrawal').addEventListener('click', function() {
+        const amount = parseFloat(document.getElementById('withdrawalAmount').value);
+        const method = document.getElementById('withdrawalMethod').value;
+        
+        if (amount > 0 && amount <= (totalEarnings * exchangeRate)) {
+            showToast(`Withdrawal request for ৳${amount.toFixed(2)} via ${method} submitted successfully!`);
+        } else {
+            alert('Invalid withdrawal amount');
+        }
+    });
+}
+
+function showDeliveryRatings() {
+    const user = getUserData();
+    if (!user) return;
+    
+    // Get delivered orders with ratings (in a real app, this would come from a database)
+    const ratedDeliveries = orders.filter(o => 
+        o.deliveryPerson === user.name && 
+        o.status === ORDER_STATUS.DELIVERED
+    ).map(order => ({
+        ...order,
+        rating: Math.floor(Math.random() * 2) + 4, // Random rating between 4-5 for demo
+        review: ["Great service!", "Fast delivery", "Polite driver", "Food arrived hot", "Excellent service"][Math.floor(Math.random() * 5)]
+    }));
+    
+    const averageRating = ratedDeliveries.reduce((sum, order) => sum + order.rating, 0) / ratedDeliveries.length || 0;
+    
+    const contentSection = document.querySelector('.delivery-content-section');
+    contentSection.innerHTML = `
+        <div class="delivery-ratings">
+            <h3>Your Ratings</h3>
+            
+            <div class="ratings-summary">
+                <div class="rating-card">
+                    <div class="rating-score">${averageRating.toFixed(1)}</div>
+                    <div class="rating-stars">
+                        ${'★'.repeat(Math.floor(averageRating))}${'☆'.repeat(5 - Math.floor(averageRating))}
+                    </div>
+                    <p>${ratedDeliveries.length} ratings</p>
+                </div>
+                
+                <div class="rating-distribution">
+                    <div class="rating-bar">
+                        <span>5 ★</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: ${(ratedDeliveries.filter(o => o.rating === 5).length / ratedDeliveries.length * 100) || 0}%"></div>
+                        </div>
+                        <span>${ratedDeliveries.filter(o => o.rating === 5).length}</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>4 ★</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: ${(ratedDeliveries.filter(o => o.rating === 4).length / ratedDeliveries.length * 100) || 0}%"></div>
+                        </div>
+                        <span>${ratedDeliveries.filter(o => o.rating === 4).length}</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>3 ★</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: ${(ratedDeliveries.filter(o => o.rating === 3).length / ratedDeliveries.length * 100) || 0}%"></div>
+                        </div>
+                        <span>${ratedDeliveries.filter(o => o.rating === 3).length}</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>2 ★</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: ${(ratedDeliveries.filter(o => o.rating === 2).length / ratedDeliveries.length * 100) || 0}%"></div>
+                        </div>
+                        <span>${ratedDeliveries.filter(o => o.rating === 2).length}</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>1 ★</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: ${(ratedDeliveries.filter(o => o.rating === 1).length / ratedDeliveries.length * 100) || 0}%"></div>
+                        </div>
+                        <span>${ratedDeliveries.filter(o => o.rating === 1).length}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="customer-reviews">
+                <h4>Customer Reviews</h4>
+                ${ratedDeliveries.length > 0 ? 
+                    ratedDeliveries.map(order => `
+                        <div class="review-card">
+                            <div class="review-header">
+                                <span class="order-id">Order #${order.id}</span>
+                                <span class="review-date">${order.date}</span>
+                                <span class="review-rating">${'★'.repeat(order.rating)}${'☆'.repeat(5 - order.rating)}</span>
+                            </div>
+                            <div class="review-content">
+                                <p>"${order.review}"</p>
+                            </div>
+                        </div>
+                    `).join('') : 
+                    '<p>No customer reviews yet</p>'}
+            </div>
+        </div>
+    `;
+}     
+
+function handleDeliveryAction(orderId, action) {
+    const order = orders.find(o => o.id == orderId);
+    if (!order) return;
+    
+    const user = getUserData();
+    if (!user) return;
+    
+    switch(action) {
+        case 'acknowledge':
+            showToast(`Order #${orderId} acknowledged`);
+            break;
+            
+        case 'pickup':
+            order.status = ORDER_STATUS.ON_THE_WAY;
+            showToast(`Order #${orderId} picked up and on the way`);
+            updateOrderStatus(order);
+            showDeliveryAssignments();
+            break;
+            
+        case 'directions':
+            // In a real app, this would open Google Maps with the restaurant's address
+            const restaurant = users.restaurant.find(r => r.username === order.restaurantId);
+            alert(`Opening directions to ${restaurant ? restaurant.restaurant : 'restaurant'}`);
+            break;
+            
+        case 'delivered':
+            order.status = ORDER_STATUS.DELIVERED;
+            showToast(`Order #${orderId} marked as delivered`);
+            updateOrderStatus(order);
+            showDeliveryAssignments();
+            break;
+            
+        case 'contact':
+            // In a real app, this would initiate a call or chat
+            const customer = users.user.find(u => u.username === order.userId);
+            alert(`Contacting customer: ${customer ? customer.phone : 'phone number not available'}`);
+            break;
+            
+        default:
+            alert(`Action "${action}" not implemented yet`);
+    }
+}
+
+function showDashboard() {
+    const dashboardContainer = document.getElementById('dashboardContainer');
+    const mainContent = document.querySelector('main');
+    const mainFooter = document.querySelector('.footer');
+    
+    // Hide main content and footer
+    mainContent.style.display = 'none';
+    mainFooter.style.display = 'none';
+    
+    // Show dashboard
+    dashboardContainer.style.display = 'block';
+    
+    // Get user data
+    const user = getUserData();
+    if (!user) return;
+    
+    // Get dashboard container elements
+    const dashboardMain = dashboardContainer.querySelector('.dashboard-main .container');
+    
+    // Clear previous content
+    dashboardMain.innerHTML = '';
+    
+    // Create dashboard content
+    let dashboardHTML = `
+        <h1 class="dashboard-title">${getDashboardTitle()}</h1>
+        <div class="welcome-message">
+            <p>${getWelcomeMessage(user)}</p>
+        </div>
+    `;
+    
+    // Add user profile section for regular users
+    if (currentUser.type === 'user') {
+        dashboardHTML += `
+            <div class="profile-section">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h2>${user.name}</h2>
+                        <p>Member since ${user.joinDate}</p>
+                    </div>
+                </div>
+                <div class="profile-details">
+                    <div class="profile-detail-card">
+                        <h3>Contact Information</h3>
+                        <p><i class="fas fa-envelope"></i> ${user.email}</p>
+                        <p><i class="fas fa-phone"></i> ${user.phone}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> ${user.address}</p>
+                    </div>
+                    <div class="profile-detail-card">
+                        <h3>Account Details</h3>
+                        <p><i class="fas fa-user"></i> ${user.username}</p>
+                        <p><i class="fas fa-calendar"></i> Joined: ${user.joinDate}</p>
+                        <p><i class="fas fa-circle" style="color: #1dd1a1;"></i> Status: ${user.status}</p>
+                    </div>
+                    <div class="profile-detail-card">
+                        <h3>Payment Methods</h3>
+                        ${user.paymentMethods.length > 0 ? 
+                            user.paymentMethods.map(method => `
+                                <p><i class="fas fa-${method.type === 'credit' ? 'credit-card' : 'mobile'}"></i> 
+                                ${method.type} ending in ${method.last4}</p>
+                            `).join('') : 
+                            '<p>No payment methods saved</p>'}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    if (currentUser.type === 'delivery') {
+        // Use the delivery dashboard content
+        showDeliveryDashboard();
+        return;
+    }
+    
+    dashboardHTML += `
+        <div class="dashboard-sections">
+            ${getDashboardCards(user)}
+        </div>
+        ${getRecentOrdersSection(user)}
+    `;
+    
+    // Add back to main button for users
+    if (currentUser.type === 'user') {
+        dashboardHTML += `
+            <div class="back-to-dashboard">
+                <a href="#" id="backToMain"><i class="fas fa-arrow-left"></i> Back to Main Site</a>
+            </div>
+        `;
+    }
+    
+    dashboardMain.innerHTML = dashboardHTML;
+    
+    // Add event listeners
+    addDashboardEventListeners();
+    
+    // Update user menu button text
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    if (userMenuBtn) {
+        userMenuBtn.innerHTML = `
+            <i class="fas fa-user-circle"></i> ${user.name || user.restaurant || user.username}
+            <i class="fas fa-caret-down"></i>
+        `;
+    }
+    
+    // Add back to main button for admin
+    if (currentUser.type === 'admin') {
+        const backButtonHTML = `
+            <div class="back-to-dashboard">
+                <a href="#" id="backToMain"><i class="fas fa-arrow-left"></i> Back to Main Site</a>
+            </div>
+        `;
+        dashboardMain.insertAdjacentHTML('beforeend', backButtonHTML);
+        
+        // Add event listener for the back button
+        const backToMainBtn = document.getElementById('backToMain');
+        if (backToMainBtn) {
+            backToMainBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                hideDashboard();
+            });
+        }
+    }
 }
 
 // Assign delivery partner function
